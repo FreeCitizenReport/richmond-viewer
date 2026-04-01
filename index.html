@@ -87,7 +87,7 @@ async function load(){
   document.querySelectorAll("#sex-filters .chip").forEach(c=>c.addEventListener("click",()=>{activeSex=c.dataset.sex;setActive("#sex-filters",c);render();}));
   document.querySelectorAll("#race-filters .chip").forEach(c=>c.addEventListener("click",()=>{activeRace=c.dataset.race;setActive("#race-filters",c);render();}));
   const dates=ALL.map(i=>i.bookDateTime||i.bookDate).filter(Boolean).sort();
-  document.getElementById("status").textContent="Updated: "+(dates.length?dates[dates.length-1]:"unknown")+" - "+ALL.length+" records";
+  document.getElementById("status").textContent="Updated: 4/1/2026, 4:52:20 AM - "+ALL.length+" records ("+ALL.filter(r=>r.mugshot).length+" with mugshots)";
   render();
 }
 function setActive(g,a){document.querySelectorAll(g+" .chip").forEach(c=>c.classList.remove("on"));a.classList.add("on");}
