@@ -73,96 +73,91 @@ footer a{color:var(--accent);text-decoration:none;}
 </div>
 <main id="grid"><div id="empty">No inmates match your search.</div></main>
 <footer>
-Data pulled from Richmond City Sheriff's Office JailTracker &middot; <a href="https://freecitizenreport.github.io/henrico-viewer/">Henrico Viewer</a> &middot; <a href="https://github.com/FreeCitizenReport">GitHub</a>
+Data pulled from Richmond City Sheriff's Office JailTracker &middot;
+<a href="https://freecitizenreport.github.io/henrico-viewer/">Henrico Viewer</a> &middot;
+<a href="https://github.com/FreeCitizenReport">GitHub</a>
 </footer>
 <script>
 let ALL=[],activeSex="",activeRace="";
-
+function parseDate(d){if(!d)return 0;var p=d.split('/');if(p.length!==3)return 0;return new Date(p[2],p[0]-1,p[1]).getTime();}
 async function load(){
-  try{const r=await fetch("data.json?v="+Date.now());ALL=await r.json();}
-  catch(e){document.getElementById("status").textContent="Could not load data.json";return;}
-
-  const races=[...new Set(ALL.map(i=>i.race).filter(Boolean))].sort();
-  const raceBar=document.getElementById("race-filters");
-  races.forEach(race=>{const c=document.createElement("div");c.className="chip";c.dataset.race=race;c.textContent=race;raceBar.appendChild(c);});
-
-  document.querySelectorAll("#sex-filters .chip").forEach(c=>c.addEventListener("click",()=>{activeSex=c.dataset.sex;setActive("#sex-filters",c);render();}));
-  document.querySelectorAll("#race-filters .chip").forEach(c=>c.addEventListener("click",()=>{activeRace=c.dataset.race;setActive("#race-filters",c);render();}));
-
-  document.getElementById("status").textContent="Updated: "+new Date().toLocaleString()+" - "+ALL.length+" records ("+ALL.filter(r=>r.mugshot).length+" with mugshots)";
-  render();
+try{const r=await fetch("data.json?v="+Date.now());ALL=await r.json();}
+catch(e){document.getElementById("status").textContent="Could not load data.json";return;}
+const races=[...new Set(ALL.map(i=>i.race).filter(Boolean))].sort();
+const raceBar=document.getElementById("race-filters");
+races.forEach(race=>{const c=document.createElement("div");c.className="chip";c.dataset.race=race;c.textContent=race;raceBar.appendChild(c);});
+document.querySelectorAll("#sex-filters .chip").forEach(c=>c.addEventListener("click",()=>{activeSex=c.dataset.sex;setActive("#sex-filters",c);render();}));
+document.querySelectorAll("#race-filters .chip").forEach(c=>c.addEventListener("click",()=>{activeRace=c.dataset.race;setActive("#race-filters",c);render();}));
+document.getElementById("status").textContent="Updated: "+new Date().toLocaleString()+" - "+ALL.length+" records ("+ALL.filter(r=>r.mugshot).length+" with mugshots)";
+render();
 }
-
 function setActive(g,a){document.querySelectorAll(g+" .chip").forEach(c=>c.classList.remove("on"));a.classList.add("on");}
-
 document.getElementById("search").addEventListener("input",render);
-
 function matches(i,q){
-  if(!q)return true;
-  var chargeText=(i.charges||[]).map(function(c){return typeof c==="string"?c:(c.description||"")+" "+(c.code||"");}).join(" ");
-  const h=[i.lastName,i.firstName,i.middleName,i.jacket,i.race,i.sex,i.alias,chargeText].join(" ").toLowerCase();
-  return q.split(/\s+/).every(t=>h.includes(t));
+if(!q)return true;
+var chargeText=(i.charges||[]).map(function(c){return typeof c==="string"?c:(c.description||"")+" "+(c.code||"");}).join(" ");
+const h=[i.lastName,i.firstName,i.middleName,i.jacket,i.race,i.sex,i.alias,chargeText].join(" ").toLowerCase();
+return q.split(/\s+/).every(t=>h.includes(t));
 }
-
 function render(){
-  const q=document.getElementById("search").value.toLowerCase().trim();
-  const f=ALL.filter(i=>matches(i,q)&&(!activeSex||i.sex===activeSex)&&(!activeRace||i.race===activeRace));
-  document.getElementById("count").textContent=f.length+" / "+ALL.length+" shown";
-  const grid=document.getElementById("grid");
-  [...grid.children].forEach(el=>{if(el.id!=="empty")el.remove();});
-  document.getElementById("empty").style.display=f.length?"none":"block";
-  f.forEach(i=>grid.appendChild(makeCard(i)));
+const q=document.getElementById("search").value.toLowerCase().trim();
+const f=ALL.filter(i=>matches(i,q)&&(!activeSex||i.sex===activeSex)&&(!activeRace||i.race===activeRace));
+f.sort(function(a,b){
+var aIn=!a.releaseDate?1:0,bIn=!b.releaseDate?1:0;
+if(aIn!==bIn)return bIn-aIn;
+return parseDate(b.bookDate)-parseDate(a.bookDate);
+});
+document.getElementById("count").textContent=f.length+" / "+ALL.length+" shown";
+const grid=document.getElementById("grid");
+[...grid.children].forEach(el=>{if(el.id!=="empty")el.remove();});
+document.getElementById("empty").style.display=f.length?"none":"block";
+f.forEach(i=>grid.appendChild(makeCard(i)));
 }
-
 function makeCard(i){
-  const inC=!i.releaseDate,fn=[i.lastName,i.firstName,i.middleName].filter(Boolean).join(", ");
-  const card=document.createElement("div");card.className="card";
-  const hdr=document.createElement("div");hdr.className="card-header";
-  const ph=document.createElement("div");ph.className="mugshot-placeholder";
-  if(i.mugshot){const img=document.createElement("img");img.src=i.mugshot;img.alt=i.lastName;img.loading="lazy";ph.appendChild(img);}
-  else{ph.textContent=(i.firstName?.[0]||"")+(i.lastName?.[0]||"");}
-  hdr.appendChild(ph);
-  const inf=document.createElement("div");inf.className="card-info";
-  inf.innerHTML='<div class="name">'+esc(fn)+'</div><div class="jacket">Jacket #'+esc(i.jacket)+'</div><div class="badges">'
-    +(i.race?'<span class="badge badge-race">'+esc(i.race)+'</span>':'')
-    +(i.sex?'<span class="badge badge-sex">'+esc(i.sex==="M"?"Male":i.sex==="F"?"Female":i.sex)+'</span>':'')
-    +(i.age?'<span class="badge badge-age">'+esc(i.age)+' yrs</span>':'')
-    +'<span class="badge '+(inC?"badge-in":"badge-out")+'">'+(inC?"In Custody":"Released")+'</span></div>';
-  hdr.appendChild(inf);card.appendChild(hdr);
-
-  const body=document.createElement("div");body.className="card-body";
-  [["Booked",i.bookDate],["Released",i.releaseDate||"-"],["Height",i.height],["Weight",i.weight],["Hair",i.hairColor],["Eyes",i.eyeColor],["Address",i.address?(i.address+" "+(i.zip||"")).trim():""],["Agency",i.arrestAgency],["Arrest Date",i.arrestDate]].filter(([,v])=>v).forEach(([l,v])=>{
-    const r=document.createElement("div");r.className="field-row";
-    r.innerHTML='<span class="field-label">'+esc(l)+'</span><span class="field-val">'+esc(v)+'</span>';
-    body.appendChild(r);
-  });
-
-  const ch=i.charges||[];
-  if(ch.length){
-    const det=document.createElement("details");det.className="charges-toggle";
-    det.innerHTML="<summary>&#9658; "+ch.length+" charge"+(ch.length>1?"s":"")+"</summary>";
-    ch.forEach(function(c){
-      const ci=document.createElement("div");ci.className="charge-item";
-      if(typeof c==="string"){
-        ci.innerHTML='<div class="charge-desc">'+esc(c)+'</div>';
-      }else{
-        ci.innerHTML='<div class="charge-desc">'+esc(c.description||c.code||'')+'</div>'
-          +'<div class="charge-meta">'
-          +(c.code?'<span>Code: '+esc(c.code)+'</span>':'')
-          +(c.courtDate?'<span>Court: '+esc(c.courtDate)+'</span>':'')
-          +(c.offenseDate?'<span>Offense: '+esc(c.offenseDate)+'</span>':'')
-          +(c.bondType?'<span>Bond: '+esc(c.bondType)+(c.bondAmount?' $'+esc(c.bondAmount):'')+'</span>':'')
-          +'</div>';
-      }
-      det.appendChild(ci);
-    });
-    body.appendChild(det);
-  }
-  card.appendChild(body);return card;
+const inC=!i.releaseDate,fn=[i.lastName,i.firstName,i.middleName].filter(Boolean).join(", ");
+const card=document.createElement("div");card.className="card";
+const hdr=document.createElement("div");hdr.className="card-header";
+const ph=document.createElement("div");ph.className="mugshot-placeholder";
+if(i.mugshot){const img=document.createElement("img");img.src=i.mugshot;img.alt=i.lastName;img.loading="lazy";ph.appendChild(img);}
+else{ph.textContent=(i.firstName?.[0]||"")+(i.lastName?.[0]||"");}
+hdr.appendChild(ph);
+const inf=document.createElement("div");inf.className="card-info";
+inf.innerHTML='<div class="name">'+esc(fn)+'</div><div class="jacket">Jacket #'+esc(i.jacket)+'</div><div class="badges">'
++(i.race?'<span class="badge badge-race">'+esc(i.race)+'</span>':'')
++(i.sex?'<span class="badge badge-sex">'+esc(i.sex==="M"?"Male":i.sex==="F"?"Female":i.sex)+'</span>':'')
++(i.age?'<span class="badge badge-age">'+esc(i.age)+' yrs</span>':'')
++'<span class="badge '+(inC?"badge-in":"badge-out")+'">'+(inC?"In Custody":"Released")+'</span></div>';
+hdr.appendChild(inf);card.appendChild(hdr);
+const body=document.createElement("div");body.className="card-body";
+[["Booked",i.bookDate],["Released",i.releaseDate||"-"],["Height",i.height],["Weight",i.weight],["Hair",i.hairColor],["Eyes",i.eyeColor],["Address",i.address?(i.address+" "+(i.zip||"")).trim():""],["Agency",i.arrestAgency],["Arrest Date",i.arrestDate]].filter(([,v])=>v).forEach(([l,v])=>{
+const r=document.createElement("div");r.className="field-row";
+r.innerHTML='<span class="field-label">'+esc(l)+'</span><span class="field-val">'+esc(v)+'</span>';
+body.appendChild(r);
+});
+const ch=i.charges||[];
+if(ch.length){
+const det=document.createElement("details");det.className="charges-toggle";
+det.innerHTML="<summary>&#9658; "+ch.length+" charge"+(ch.length>1?"s":"")+"</summary>";
+ch.forEach(function(c){
+const ci=document.createElement("div");ci.className="charge-item";
+if(typeof c==="string"){
+ci.innerHTML='<div class="charge-desc">'+esc(c)+'</div>';
+}else{
+ci.innerHTML='<div class="charge-desc">'+esc(c.description||c.code||'')+'</div>'
++'<div class="charge-meta">'
++(c.code?'<span>Code: '+esc(c.code)+'</span>':'')
++(c.courtDate?'<span>Court: '+esc(c.courtDate)+'</span>':'')
++(c.offenseDate?'<span>Offense: '+esc(c.offenseDate)+'</span>':'')
++(c.bondType?'<span>Bond: '+esc(c.bondType)+(c.bondAmount?' $'+esc(c.bondAmount):'')+'</span>':'')
++'</div>';
 }
-
+det.appendChild(ci);
+});
+body.appendChild(det);
+}
+card.appendChild(body);return card;
+}
 function esc(s){return String(s??"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");}
-
 if("serviceWorker"in navigator)navigator.serviceWorker.register("sw.js").catch(()=>{});
 load();
 </script>
