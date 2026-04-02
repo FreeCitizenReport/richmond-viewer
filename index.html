@@ -5,94 +5,105 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Richmond City Jail Roster - FreeCitizenReport</title>
 <style>
-  :root{--bg:#0f1117;--panel:#1a1d27;--card:#22263a;--border:#2e3350;--accent:#4f8ef7;--green:#3ecf6e;--red:#f75757;--text:#e4e8ff;--muted:#8891b8;--chip-bg:#2a2f4a;--radius:8px;}
-  *{box-sizing:border-box;margin:0;padding:0;} 
-  body{background:var(--bg);color:var(--text);font-family:system-ui,-apple-system,sans-serif;min-height:100vh;}
-  header{background:var(--panel);border-bottom:1px solid var(--border);padding:14px 20px;display:flex;align-items:center;gap:14px;}
-  header h1{font-size:1.1rem;font-weight:700;letter-spacing:.02em;}
-  header h1 span{color:var(--accent);}
-  #status{margin-left:auto;font-size:.8rem;color:var(--muted);}
-  .controls{padding:16px 20px;display:flex;flex-wrap:wrap;gap:10px;align-items:center;background:var(--panel);border-bottom:1px solid var(--border);}
-  .controls input[type=text]{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);color:var(--text);padding:8px 12px;font-size:.9rem;width:220px;}
-  .controls input[type=text]:focus{outline:none;border-color:var(--accent);}
-  .controls input::placeholder{color:var(--muted);}
-  .filter-group{display:flex;gap:6px;flex-wrap:wrap;}
-  .chip{background:var(--chip-bg);border:1px solid var(--border);border-radius:20px;color:var(--muted);cursor:pointer;font-size:.78rem;padding:4px 12px;transition:all .15s;user-select:none;}
-  .chip:hover{border-color:var(--accent);color:var(--text);}
-  .chip.on{background:var(--accent);border-color:var(--accent);color:#fff;}
-  #count{font-size:.82rem;color:var(--muted);margin-left:auto;white-space:nowrap;}
-  main{padding:16px 20px;display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:14px;}
-  .card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;transition:border-color .15s;}
-  .card:hover{border-color:var(--accent);}
-  .card-header{display:flex;align-items:flex-start;gap:12px;padding:12px 14px;}
-  .mugshot-placeholder{width:64px;height:80px;border-radius:4px;background:var(--panel);flex-shrink:0;display:flex;align-items:center;justify-content:center;color:var(--muted);font-size:1.6rem;border:1px solid var(--border);overflow:hidden;} .mugshot-placeholder img{width:100%;height:100%;object-fit:cover;}
-  .card-info{flex:1;min-width:0;}
-  .name{font-size:1rem;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-  .jacket{font-size:.75rem;color:var(--muted);margin-top:2px;}
-  .badges{display:flex;flex-wrap:wrap;gap:4px;margin-top:6px;}
-  .badge{font-size:.7rem;padding:2px 7px;border-radius:10px;font-weight:600;}
-  .badge-race{background:#2d3a5e;color:#8eb4ff;}
-  .badge-sex{background:#2d4a3a;color:#6eddaa;}
-  .badge-age{background:#3a2d4a;color:#c78eff;}
-  .badge-in{background:#1e3a28;color:var(--green);}
-  .badge-out{background:#3a1e1e;color:var(--red);}
-  .card-body{padding:0 14px 12px;}
-  .field-row{display:flex;justify-content:space-between;font-size:.8rem;padding:3px 0;border-bottom:1px solid var(--border);}
-  .field-row:last-child{border-bottom:none;}
-  .field-label{color:var(--muted);}
-  .field-val{color:var(--text);text-align:right;max-width:60%;word-break:break-word;}
-  details.charges-toggle{margin-top:8px;}
-  details.charges-toggle summary{cursor:pointer;font-size:.78rem;color:var(--accent);list-style:none;}
-  details.charges-toggle summary::-webkit-details-marker{display:none;}
-  .charge-item{background:var(--panel);border:1px solid var(--border);border-radius:5px;padding:7px 10px;margin-top:6px;font-size:.77rem;}
-  .charge-desc{font-weight:600;color:var(--text);margin-bottom:4px;}
-  .charge-meta{color:var(--muted);display:flex;flex-wrap:wrap;gap:6px;}
-  .charge-meta span{background:var(--chip-bg);border-radius:4px;padding:1px 6px;}
-  #empty{display:none;text-align:center;color:var(--muted);padding:60px 20px;font-size:1rem;grid-column:1/-1;}
-  footer{text-align:center;padding:24px;color:var(--muted);font-size:.75rem;border-top:1px solid var(--border);margin-top:10px;}
-  footer a{color:var(--accent);text-decoration:none;}
+:root{--bg:#0f1117;--panel:#1a1d27;--card:#22263a;--border:#2e3350;--accent:#4f8ef7;--green:#3ecf6e;--red:#f75757;--text:#e4e8ff;--muted:#8891b8;--chip-bg:#2a2f4a;--radius:8px;}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{background:var(--bg);color:var(--text);font-family:system-ui,-apple-system,sans-serif;min-height:100vh;}
+header{background:var(--panel);border-bottom:1px solid var(--border);padding:14px 20px;display:flex;align-items:center;gap:14px;}
+header h1{font-size:1.1rem;font-weight:700;letter-spacing:.02em;}
+header h1 span{color:var(--accent);}
+#status{margin-left:auto;font-size:.8rem;color:var(--muted);}
+.controls{padding:16px 20px;display:flex;flex-wrap:wrap;gap:10px;align-items:center;background:var(--panel);border-bottom:1px solid var(--border);}
+.controls input[type=text]{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);color:var(--text);padding:8px 12px;font-size:.9rem;width:220px;}
+.controls input[type=text]:focus{outline:none;border-color:var(--accent);}
+.controls input::placeholder{color:var(--muted);}
+.filter-group{display:flex;gap:6px;flex-wrap:wrap;}
+.chip{background:var(--chip-bg);border:1px solid var(--border);border-radius:20px;color:var(--muted);cursor:pointer;font-size:.78rem;padding:4px 12px;transition:all .15s;user-select:none;}
+.chip:hover{border-color:var(--accent);color:var(--text);}
+.chip.on{background:var(--accent);border-color:var(--accent);color:#fff;}
+#count{font-size:.82rem;color:var(--muted);margin-left:auto;white-space:nowrap;}
+main{padding:16px 20px;display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:14px;}
+.card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;transition:border-color .15s;}
+.card:hover{border-color:var(--accent);}
+.card-header{display:flex;align-items:flex-start;gap:12px;padding:12px 14px;}
+.mugshot-placeholder{width:64px;height:80px;border-radius:4px;background:var(--panel);flex-shrink:0;display:flex;align-items:center;justify-content:center;color:var(--muted);font-size:1.6rem;border:1px solid var(--border);overflow:hidden;}
+.mugshot-placeholder img{width:100%;height:100%;object-fit:cover;}
+.card-info{flex:1;min-width:0;}
+.name{font-size:1rem;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.jacket{font-size:.75rem;color:var(--muted);margin-top:2px;}
+.badges{display:flex;flex-wrap:wrap;gap:4px;margin-top:6px;}
+.badge{font-size:.7rem;padding:2px 7px;border-radius:10px;font-weight:600;}
+.badge-race{background:#2d3a5e;color:#8eb4ff;}
+.badge-sex{background:#2d4a3a;color:#6eddaa;}
+.badge-age{background:#3a2d4a;color:#c78eff;}
+.badge-in{background:#1e3a28;color:var(--green);}
+.badge-out{background:#3a1e1e;color:var(--red);}
+.card-body{padding:0 14px 12px;}
+.field-row{display:flex;justify-content:space-between;font-size:.8rem;padding:3px 0;border-bottom:1px solid var(--border);}
+.field-row:last-child{border-bottom:none;}
+.field-label{color:var(--muted);}
+.field-val{color:var(--text);text-align:right;max-width:60%;word-break:break-word;}
+details.charges-toggle{margin-top:8px;}
+details.charges-toggle summary{cursor:pointer;font-size:.78rem;color:var(--accent);list-style:none;}
+details.charges-toggle summary::-webkit-details-marker{display:none;}
+.charge-item{background:var(--panel);border:1px solid var(--border);border-radius:5px;padding:7px 10px;margin-top:6px;font-size:.77rem;}
+.charge-desc{font-weight:600;color:var(--text);margin-bottom:4px;}
+.charge-meta{color:var(--muted);display:flex;flex-wrap:wrap;gap:6px;}
+.charge-meta span{background:var(--chip-bg);border-radius:4px;padding:1px 6px;}
+#empty{display:none;text-align:center;color:var(--muted);padding:60px 20px;font-size:1rem;grid-column:1/-1;}
+footer{text-align:center;padding:24px;color:var(--muted);font-size:.75rem;border-top:1px solid var(--border);margin-top:10px;}
+footer a{color:var(--accent);text-decoration:none;}
 </style>
 </head>
 <body>
 <header>
-  <h1>Richmond City Jail Roster &nbsp;&middot;&nbsp; <span>FreeCitizenReport</span></h1>
-  <div id="status">Loading&hellip;</div>
+<h1>Richmond City Jail Roster &nbsp;&middot;&nbsp; <span>FreeCitizenReport</span></h1>
+<div id="status">Loading&hellip;</div>
 </header>
 <div class="controls">
-  <input type="text" id="search" placeholder="Search name, charge, jacket&hellip;">
-  <div class="filter-group" id="sex-filters">
-    <div class="chip on" data-sex="">All sexes</div>
-    <div class="chip" data-sex="M">Male</div>
-    <div class="chip" data-sex="F">Female</div>
-  </div>
-  <div class="filter-group" id="race-filters">
-    <div class="chip on" data-race="">All races</div>
-  </div>
-  <div id="count"></div>
+<input type="text" id="search" placeholder="Search name, charge, jacket&hellip;">
+<div class="filter-group" id="sex-filters">
+<div class="chip on" data-sex="">All sexes</div>
+<div class="chip" data-sex="M">Male</div>
+<div class="chip" data-sex="F">Female</div>
+</div>
+<div class="filter-group" id="race-filters">
+<div class="chip on" data-race="">All races</div>
+</div>
+<div id="count"></div>
 </div>
 <main id="grid"><div id="empty">No inmates match your search.</div></main>
 <footer>
-  Data pulled from Richmond City Sheriff's Office JailTracker &middot;
-  <a href="https://freecitizenreport.github.io/henrico-viewer/">Henrico Viewer</a> &middot;
-  <a href="https://github.com/FreeCitizenReport">GitHub</a>
+Data pulled from Richmond City Sheriff's Office JailTracker &middot; <a href="https://freecitizenreport.github.io/henrico-viewer/">Henrico Viewer</a> &middot; <a href="https://github.com/FreeCitizenReport">GitHub</a>
 </footer>
 <script>
 let ALL=[],activeSex="",activeRace="";
+
 async function load(){
   try{const r=await fetch("data.json?v="+Date.now());ALL=await r.json();}
   catch(e){document.getElementById("status").textContent="Could not load data.json";return;}
+
   const races=[...new Set(ALL.map(i=>i.race).filter(Boolean))].sort();
   const raceBar=document.getElementById("race-filters");
   races.forEach(race=>{const c=document.createElement("div");c.className="chip";c.dataset.race=race;c.textContent=race;raceBar.appendChild(c);});
+
   document.querySelectorAll("#sex-filters .chip").forEach(c=>c.addEventListener("click",()=>{activeSex=c.dataset.sex;setActive("#sex-filters",c);render();}));
   document.querySelectorAll("#race-filters .chip").forEach(c=>c.addEventListener("click",()=>{activeRace=c.dataset.race;setActive("#race-filters",c);render();}));
-  const dates=ALL.map(i=>i.bookDateTime||i.bookDate).filter(Boolean).sort();
+
   document.getElementById("status").textContent="Updated: "+new Date().toLocaleString()+" - "+ALL.length+" records ("+ALL.filter(r=>r.mugshot).length+" with mugshots)";
   render();
 }
+
 function setActive(g,a){document.querySelectorAll(g+" .chip").forEach(c=>c.classList.remove("on"));a.classList.add("on");}
+
 document.getElementById("search").addEventListener("input",render);
-function matches(i,q){if(!q)return true;const h=[i.lastName,i.firstName,i.middleName,i.jacket,i.race,i.sex,i.alias,...(i.charges||[]).map(c=>c.description+" "+c.code)].join(" ").toLowerCase();return q.split(/\s+/).every(t=>h.includes(t));}
+
+function matches(i,q){
+  if(!q)return true;
+  var chargeText=(i.charges||[]).map(function(c){return typeof c==="string"?c:(c.description||"")+" "+(c.code||"");}).join(" ");
+  const h=[i.lastName,i.firstName,i.middleName,i.jacket,i.race,i.sex,i.alias,chargeText].join(" ").toLowerCase();
+  return q.split(/\s+/).every(t=>h.includes(t));
+}
+
 function render(){
   const q=document.getElementById("search").value.toLowerCase().trim();
   const f=ALL.filter(i=>matches(i,q)&&(!activeSex||i.sex===activeSex)&&(!activeRace||i.race===activeRace));
@@ -102,32 +113,58 @@ function render(){
   document.getElementById("empty").style.display=f.length?"none":"block";
   f.forEach(i=>grid.appendChild(makeCard(i)));
 }
+
 function makeCard(i){
   const inC=!i.releaseDate,fn=[i.lastName,i.firstName,i.middleName].filter(Boolean).join(", ");
   const card=document.createElement("div");card.className="card";
   const hdr=document.createElement("div");hdr.className="card-header";
-  const ph=document.createElement("div");ph.className="mugshot-placeholder";if(i.mugshot){const img=document.createElement("img");img.src=i.mugshot;img.alt=i.lastName;img.loading="lazy";ph.appendChild(img);}else{ph.textContent=(i.firstName?.[0]||"")+(i.lastName?.[0]||"");}hdr.appendChild(ph);
+  const ph=document.createElement("div");ph.className="mugshot-placeholder";
+  if(i.mugshot){const img=document.createElement("img");img.src=i.mugshot;img.alt=i.lastName;img.loading="lazy";ph.appendChild(img);}
+  else{ph.textContent=(i.firstName?.[0]||"")+(i.lastName?.[0]||"");}
+  hdr.appendChild(ph);
   const inf=document.createElement("div");inf.className="card-info";
-  inf.innerHTML='<div class="name">'+esc(fn)+'</div><div class="jacket">Jacket #'+esc(i.jacket)+'</div><div class="badges">'+(i.race?'<span class="badge badge-race">'+esc(i.race)+'</span>':'')+(i.sex?'<span class="badge badge-sex">'+esc(i.sex==="M"?"Male":i.sex==="F"?"Female":i.sex)+'</span>':'')+(i.age?'<span class="badge badge-age">'+esc(i.age)+' yrs</span>':'')+'<span class="badge '+(inC?"badge-in":"badge-out")+'">'+(inC?"In Custody":"Released")+'</span></div>';
+  inf.innerHTML='<div class="name">'+esc(fn)+'</div><div class="jacket">Jacket #'+esc(i.jacket)+'</div><div class="badges">'
+    +(i.race?'<span class="badge badge-race">'+esc(i.race)+'</span>':'')
+    +(i.sex?'<span class="badge badge-sex">'+esc(i.sex==="M"?"Male":i.sex==="F"?"Female":i.sex)+'</span>':'')
+    +(i.age?'<span class="badge badge-age">'+esc(i.age)+' yrs</span>':'')
+    +'<span class="badge '+(inC?"badge-in":"badge-out")+'">'+(inC?"In Custody":"Released")+'</span></div>';
   hdr.appendChild(inf);card.appendChild(hdr);
+
   const body=document.createElement("div");body.className="card-body";
-  [["Booked",i.bookDate],["Released",i.releaseDate||"-"],["Height",i.height],["Weight",i.weight],["Hair",i.hairColor],["Eyes",i.eyeColor],["Address",i.address?(i.address+" "+(i.zip||"")).trim():""],["Agency",i.arrestAgency]].filter(([,v])=>v).forEach(([l,v])=>{const r=document.createElement("div");r.className="field-row";r.innerHTML='<span class="field-label">'+esc(l)+'</span><span class="field-val">'+esc(v)+'</span>';body.appendChild(r);});
+  [["Booked",i.bookDate],["Released",i.releaseDate||"-"],["Height",i.height],["Weight",i.weight],["Hair",i.hairColor],["Eyes",i.eyeColor],["Address",i.address?(i.address+" "+(i.zip||"")).trim():""],["Agency",i.arrestAgency],["Arrest Date",i.arrestDate]].filter(([,v])=>v).forEach(([l,v])=>{
+    const r=document.createElement("div");r.className="field-row";
+    r.innerHTML='<span class="field-label">'+esc(l)+'</span><span class="field-val">'+esc(v)+'</span>';
+    body.appendChild(r);
+  });
+
   const ch=i.charges||[];
-  if(ch.length){const det=document.createElement("details");det.className="charges-toggle";det.innerHTML="<summary>&#9658; "+ch.length+" charge"+(ch.length>1?"s":"")+"</summary>";ch.forEach(c=>{const ci=document.createElement("div");ci.className="charge-item";if(typeof c==="string"){ci.innerHTML='<div class="charge-desc">'+esc(c)+'</div>';}else{ci.innerHTML='<div class="charge-desc">'+esc(c.description||c.code||'')+'</div><div class="charge-meta">'+(c.code?'<span>Code: '+esc(c.code)+'</span>':'')+(c.courtDate?'<span>Court: '+esc(c.courtDate)+'</span>':'')+(c.offenseDate?'<span>Offense: '+esc(c.offenseDate)+'</span>':'')+(c.bondType?'<span>Bond: '+esc(c.bondType)+(c.bondAmount?' ;body.appendChild(det);}
+  if(ch.length){
+    const det=document.createElement("details");det.className="charges-toggle";
+    det.innerHTML="<summary>&#9658; "+ch.length+" charge"+(ch.length>1?"s":"")+"</summary>";
+    ch.forEach(function(c){
+      const ci=document.createElement("div");ci.className="charge-item";
+      if(typeof c==="string"){
+        ci.innerHTML='<div class="charge-desc">'+esc(c)+'</div>';
+      }else{
+        ci.innerHTML='<div class="charge-desc">'+esc(c.description||c.code||'')+'</div>'
+          +'<div class="charge-meta">'
+          +(c.code?'<span>Code: '+esc(c.code)+'</span>':'')
+          +(c.courtDate?'<span>Court: '+esc(c.courtDate)+'</span>':'')
+          +(c.offenseDate?'<span>Offense: '+esc(c.offenseDate)+'</span>':'')
+          +(c.bondType?'<span>Bond: '+esc(c.bondType)+(c.bondAmount?' $'+esc(c.bondAmount):'')+'</span>':'')
+          +'</div>';
+      }
+      det.appendChild(ci);
+    });
+    body.appendChild(det);
+  }
   card.appendChild(body);return card;
 }
+
 function esc(s){return String(s??"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");}
+
 if("serviceWorker"in navigator)navigator.serviceWorker.register("sw.js").catch(()=>{});
 load();
 </script>
 </body>
-</html> 
-+esc(c.bondAmount):'')+'</span>':'')+'</div>';}det.appendChild(ci);});body.appendChild(det);}
-  card.appendChild(body);return card;
-}
-function esc(s){return String(s??"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");}
-if("serviceWorker"in navigator)navigator.serviceWorker.register("sw.js").catch(()=>{});
-load();
-</script>
-</body>
-</html> 
+</html>
