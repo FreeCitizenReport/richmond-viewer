@@ -105,6 +105,8 @@ const f=ALL.filter(i=>matches(i,q)&&(!activeSex||i.sex===activeSex)&&(!activeRac
 f.sort(function(a,b){
 var aIn=!a.releaseDate?1:0,bIn=!b.releaseDate?1:0;
 if(aIn!==bIn)return bIn-aIn;
+var aMug=a.mugshot?1:0,bMug=b.mugshot?1:0;
+if(aMug!==bMug)return bMug-aMug;
 return parseDate(b.bookDate)-parseDate(a.bookDate);
 });
 document.getElementById("count").textContent=f.length+" / "+ALL.length+" shown";
