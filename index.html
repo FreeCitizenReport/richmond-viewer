@@ -415,7 +415,7 @@ function renderLanding() {
 
   /* Mugshot grid - show up to 60 on landing */
   var mugGrid = document.getElementById('mug-grid');
-  var maxMugs = Math.min(withMug.length, 60);
+  var maxMugs = withMug.length;
   var mugHtml = '';
   for (var i = 0; i < maxMugs; i++) {
     var r = withMug[i];
