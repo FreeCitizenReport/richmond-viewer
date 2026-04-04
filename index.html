@@ -2,8 +2,8 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Richmond City Jail &mdash; 2026 Booking Records</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Richmond City Jail — 2026 Booking Records</title>
 <style>
 * { box-sizing: border-box; margin: 0; padding: 0; }
 body { background: #0d1117; color: #c9d1d9; font-family: 'Segoe UI', system-ui, sans-serif; height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
@@ -11,7 +11,7 @@ body { background: #0d1117; color: #c9d1d9; font-family: 'Segoe UI', system-ui, 
 /* HEADER */
 #header { background: #161b22; border-bottom: 1px solid #30363d; padding: 8px 14px; display: flex; align-items: center; gap: 10px; flex-shrink: 0; flex-wrap: nowrap; }
 #header h1 { font-size: 14px; font-weight: 700; color: #f0f6fc; white-space: nowrap; }
-#header h1::before { content: '\1F3DB'; margin-right: 5px; }
+#header h1:before { content: '\1F3DB'; margin-right: 5px; }
 #search-wrap { position: relative; }
 #search-input { background: #0d1117; border: 1px solid #30363d; color: #c9d1d9; padding: 5px 10px; border-radius: 6px; font-size: 12px; width: 200px; }
 #search-input:focus { outline: none; border-color: #1f6feb; }
@@ -33,6 +33,10 @@ button:hover { background: #30363d; border-color: #8b949e; }
 #disclaimer { font-size: 10px; color: #8b949e; text-align: center; padding: 3px 8px; background: #161b22; border-bottom: 1px solid #30363d; flex-shrink: 0; }
 #disclaimer::before { content: '\26D6'; margin-right: 4px; }
 
+/* VIEW TOGGLE */
+#view-toggle { display: flex; gap: 4px; }
+#view-toggle button.active { background: #1f6feb; border-color: #1f6feb; color: #fff; }
+
 /* FILTER BAR */
 #filter-bar { display: none; background: #161b22; border-bottom: 1px solid #30363d; padding: 8px 14px; flex-wrap: wrap; gap: 8px; align-items: center; flex-shrink: 0; }
 #filter-bar.open { display: flex; }
@@ -44,13 +48,45 @@ select:focus { outline: none; border-color: #1f6feb; }
 #clear-filters:hover { text-decoration: underline; }
 #active-filters { font-size: 10px; color: #f0883e; display: none; padding: 0 14px 4px; background: #161b22; flex-shrink: 0; }
 
+/* LANDING PAGE */
+#landing-page { flex: 1; overflow-y: auto; padding: 20px; display: flex; flex-direction: column; gap: 24px; }
+#landing-page.hidden { display: none; }
+.landing-section { max-width: 1200px; width: 100%; margin: 0 auto; }
+.landing-section h2 { font-size: 16px; color: #f0f6fc; margin-bottom: 12px; border-bottom: 1px solid #30363d; padding-bottom: 8px; }
+.landing-section h2 .count { font-size: 12px; color: #8b949e; font-weight: 400; }
+
+/* MUGSHOT GRID */
+.mug-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 12px; }
+.mug-card { background: #161b22; border: 1px solid #30363d; border-radius: 8px; overflow: hidden; cursor: pointer; transition: border-color 0.15s, transform 0.15s; }
+.mug-card:hover { border-color: #58a6ff; transform: translateY(-2px); }
+.mug-card-img { width: 100%; aspect-ratio: 3/4; object-fit: cover; background: #0d1117; }
+.mug-card-info { padding: 8px; }
+.mug-card-name { font-size: 12px; font-weight: 600; color: #f0f6fc; line-height: 1.3; }
+.mug-card-meta { font-size: 10px; color: #8b949e; margin-top: 3px; }
+.mug-card-badge { display: inline-block; font-size: 9px; padding: 1px 6px; border-radius: 10px; margin-top: 4px; }
+.mug-card-badge.held { background: #da3633; color: #fff; }
+.mug-card-badge.released { background: #238636; color: #fff; }
+
+/* COMING SOON LIST */
+.soon-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 8px; }
+.soon-card { background: #161b22; border: 1px solid #30363d; border-radius: 6px; padding: 10px 14px; cursor: pointer; transition: border-color 0.15s; display: flex; align-items: center; gap: 12px; }
+.soon-card:hover { border-color: #58a6ff; }
+.soon-avatar { width: 40px; height: 40px; border-radius: 50%; background: #21262d; display: flex; align-items: center; justify-content: center; font-size: 16px; color: #484f58; flex-shrink: 0; }
+.soon-info { flex: 1; min-width: 0; }
+.soon-name { font-size: 12px; font-weight: 600; color: #f0f6fc; }
+.soon-detail { font-size: 10px; color: #8b949e; margin-top: 2px; }
+.soon-charges { font-size: 10px; color: #f0883e; margin-top: 3px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
 /* MAIN 3-PANEL LAYOUT */
 #main { display: flex; flex: 1; overflow: hidden; }
+#main.hidden { display: none; }
 
 /* LEFT PANEL */
 #left-panel { width: 200px; min-width: 200px; border-right: 1px solid #30363d; display: flex; flex-direction: column; flex-shrink: 0; }
-#mugshot-wrap { width: 100%; aspect-ratio: 3/4; background: #161b22; display: flex; align-items: center; justify-content: center; overflow: hidden; flex-shrink: 0; border-bottom: 1px solid #30363d; }
+#mugshot-wrap { width: 100%; aspect-ratio: 3/4; background: #161b22; display: flex; align-items: center; justify-content: center; overflow: hidden; flex-shrink: 0; border-bottom: 1px solid #30363d; cursor: pointer; position: relative; }
 #mugshot-wrap img { width: 100%; height: 100%; object-fit: cover; }
+#mugshot-wrap .zoom-hint { position: absolute; bottom: 4px; right: 4px; background: rgba(0,0,0,0.7); color: #8b949e; font-size: 9px; padding: 2px 6px; border-radius: 4px; opacity: 0; transition: opacity 0.2s; pointer-events: none; }
+#mugshot-wrap:hover .zoom-hint { opacity: 1; }
 .mug-placeholder { color: #484f58; font-size: 12px; }
 #id-info { padding: 10px 12px; overflow-y: auto; flex: 1; }
 .id-row { margin-bottom: 7px; }
@@ -84,19 +120,25 @@ select:focus { outline: none; border-color: #1f6feb; }
 .tag-dismissed { background: #1f2d3d; color: #58a6ff; }
 .tag-nolle { background: #3d3d1f; color: #d29922; }
 .tag-other { background: #21262d; color: #8b949e; }
-.tag-related { background: #3d2f1f; color: #f0883e; font-size: 10px; padding: 2px 6px; border-radius: 3px; }
+.tag-related { background: #3d2f1f; color: #f0883e; font-size: 10px; border-top: 1px solid #21262d; padding-top: 8px; display: none; }
 .case-detail { margin-top: 8px; padding-top: 8px; border-top: 1px solid #21262d; font-size: 11px; color: #8b949e; display: none; }
 .court-card.expanded .case-detail { display: block; }
 .detail-row { padding: 2px 0; }
 .detail-label { color: #6e7681; font-weight: 500; }
 .no-records-msg { color: #8b949e; font-size: 13px; font-style: italic; padding: 6px 0; }
 
+/* MUGSHOT LIGHTBOX */
+#lightbox { position: fixed; inset: 0; background: rgba(0,0,0,0.85); z-index: 500; display: none; align-items: center; justify-content: center; cursor: zoom-out; }
+#lightbox.open { display: flex; }
+#lightbox img { max-width: 90vw; max-height: 90vh; object-fit: contain; border-radius: 8px; box-shadow: 0 8px 32px rgba(0,0,0,0.5); }
+#lightbox .lb-close { position: absolute; top: 16px; right: 20px; color: #fff; font-size: 28px; cursor: pointer; background: none; border: none; }
+
 /* AD PANEL */
 #ad-panel { width: 260px; min-width: 260px; border-left: 1px solid #30363d; overflow-y: auto; padding: 10px; flex-shrink: 0; }
 .g-text-ad { background: #161b22; border: 1px solid #30363d; border-radius: 8px; padding: 14px; margin-bottom: 12px; }
 .g-sponsored { font-size: 10px; color: #da3633; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 3px; }
 .g-url { font-size: 11px; color: #8b949e; margin-bottom: 4px; }
-.g-headline { font-size: 15px; font-weight: 600; color: #58a6ff; cursor: pointer; text-decoration: none; display: block; margin-bottom: 6px; line-height: 1.3; }
+.g-headline { font-size: 15px; color: #58a6ff; cursor: pointer; text-decoration: none; display: block; margin-bottom: 6px; line-height: 1.3; }
 .g-headline:hover { text-decoration: underline; }
 .g-desc { font-size: 12px; color: #c9d1d9; line-height: 1.4; margin-bottom: 8px; }
 .g-sitelinks { display: flex; gap: 8px; flex-wrap: wrap; }
@@ -142,19 +184,21 @@ select:focus { outline: none; border-color: #1f6feb; }
   #main { flex-direction: column; }
   #left-panel { width: 100%; min-width: 100%; flex-direction: row; border-right: none; border-bottom: 1px solid #30363d; height: auto; }
   #mugshot-wrap { width: 100px; min-width: 100px; aspect-ratio: 3/4; }
-  #id-info { padding: 8px; }
-  #center-panel { border-right: none; }
-  #header { flex-wrap: wrap; }
+  .mug-grid { grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); }
+  .soon-list { grid-template-columns: 1fr; }
 }
 </style>
 </head>
 <body>
-
 <div id="loading-overlay"><div class="spin"></div><div class="loading-text">Loading records&hellip;</div></div>
 <div id="loading-bar"></div>
 
 <div id="header">
   <h1>Richmond City 2026 Bookings</h1>
+  <div id="view-toggle">
+    <button id="btn-landing" class="active" onclick="showLanding()">Home</button>
+    <button id="btn-detail" onclick="showDetail()">Browse</button>
+  </div>
   <div id="search-wrap">
     <input id="search-input" type="text" placeholder="Search by name...">
     <div id="search-results"></div>
@@ -182,10 +226,23 @@ select:focus { outline: none; border-color: #1f6feb; }
   <div id="active-filters"></div>
 </div>
 
-<div id="main">
+<!-- LANDING PAGE -->
+<div id="landing-page">
+  <div class="landing-section">
+    <h2>Latest Mugshots <span class="count" id="mug-count"></span></h2>
+    <div class="mug-grid" id="mug-grid"></div>
+  </div>
+  <div class="landing-section">
+    <h2>Coming Soon &mdash; Awaiting Photo <span class="count" id="soon-count"></span></h2>
+    <div class="soon-list" id="soon-list"></div>
+  </div>
+</div>
+
+<!-- DETAIL VIEW (3-panel) -->
+<div id="main" class="hidden">
   <!-- LEFT: Mugshot + ID Info -->
   <div id="left-panel">
-    <div id="mugshot-wrap"><span class="mug-placeholder">Photo Uploading...</span></div>
+    <div id="mugshot-wrap"><span class="mug-placeholder">Photo Uploading...</span><span class="zoom-hint">Click to enlarge</span></div>
     <div id="id-info"></div>
   </div>
 
@@ -229,345 +286,459 @@ select:focus { outline: none; border-color: #1f6feb; }
     <a class="g-display-card" href="https://vanhardenbergh.com" target="_blank">
       <div class="g-card-img" style="position:relative;">
         <img src="https://images.unsplash.com/photo-1521791055366-0d553872125f?w=400&h=200&fit=crop" alt="Legal Help">
-        <span class="g-card-badge" style="background:#da3633;color:#fff;">FREE</span>
+        <span class="g-card-badge" style="background:#da3633;color:#fff;">Free Consult</span>
       </div>
       <div class="g-card-body">
         <div class="g-card-label">Ad &middot; VanHardenbergh.com</div>
-        <div class="g-card-headline">How to Win a Criminal Case in Richmond</div>
-        <div class="g-card-desc">Prosecutors make mistakes. Evidence gets suppressed. Know your options before entering any plea. Confidential &mdash; no obligation.</div>
-        <span class="g-card-cta">Free Strategy Call &rarr;</span>
+        <div class="g-card-headline">Know Your Rights: Richmond Arrest &amp; Bail Guide 2026</div>
       </div>
-      <div class="g-card-footer">Charles V. Hardenbergh PC &middot; Attorney Advertising</div>
     </a>
 
     <div class="g-call-strip">
-      <div class="g-call-icon">&#128222;</div>
+      <div class="g-call-icon">&#9742;</div>
       <div class="g-call-text">
-        <div class="g-call-label">Sponsored &middot;</div>
-        <div class="g-call-avail">Available 24/7</div>
-        <div class="g-call-headline">Speak With an Attorney Right Now</div>
+        <div class="g-call-label">24/7 Legal Help</div>
+        <div class="g-call-avail">Available Now</div>
+        <div class="g-call-headline">VanHardenbergh.com</div>
       </div>
-      <button class="g-call-btn" onclick="window.open('tel:8048355127')">(804) 835-5127</button>
+      <a class="g-call-btn" href="https://vanhardenbergh.com" target="_blank">Visit Site</a>
     </div>
-    <div class="g-call-disclaimer">Sponsored &middot; Charles V. Hardenbergh PC &middot; (804) 835-5127 &middot; Attorney advertising. Results may vary.</div>
+    <div class="g-call-disclaimer">Ad &middot; VanHardenbergh.com</div>
   </div>
 </div>
 
+<!-- LIGHTBOX -->
+<div id="lightbox" onclick="closeLightbox()">
+  <button class="lb-close" onclick="closeLightbox()">&times;</button>
+  <img id="lb-img" src="" alt="Mugshot">
+</div>
 <script>
 (function() {
-  var RECORDS = [];
-  var COURT = {};
-  var filtered = [];
-  var idx = 0;
+var RECORDS = [];
+var COURT = {};
+var filtered = [];
+var idx = 0;
+var currentView = 'landing'; // 'landing' or 'detail'
 
-  /* ---------- LOAD DATA ---------- */
-  var loadBar = document.getElementById('loading-bar');
-  loadBar.style.width = '30%';
+/* ----------- LOAD DATA ----------- */
+var loadBar = document.getElementById('loading-bar');
+loadBar.style.width = '30%';
 
-  Promise.all([
-    fetch('data.json?v=' + Date.now()).then(function(r) { return r.json(); }),
-    fetch('court_data.json?v=' + Date.now()).then(function(r) { return r.json(); }).catch(function() { return {}; })
-  ]).then(function(results) {
-    loadBar.style.width = '80%';
-    RECORDS = results[0];
-    COURT = results[1] || {};
+Promise.all([
+  fetch('data.json?v=' + Date.now()).then(function(r) { return r.json(); }),
+  fetch('court_data.json?v=' + Date.now()).then(function(r) { return r.json(); }).catch(function() { return {}; })
+]).then(function(results) {
+  loadBar.style.width = '80%';
+  RECORDS = results[0];
+  COURT = results[1] || {};
 
-    /* Sort: in-custody first, then by mugshot presence, then by bookDate desc */
-    RECORDS.sort(function(a, b) {
-      var aHeld = !a.releaseDate ? 0 : 1;
-      var bHeld = !b.releaseDate ? 0 : 1;
-      if (aHeld !== bHeld) return aHeld - bHeld;
-      var aMug = (a.mugshot && a.mugshot.length > 100) ? 0 : 1;
-      var bMug = (b.mugshot && b.mugshot.length > 100) ? 0 : 1;
-      if (aMug !== bMug) return aMug - bMug;
-      return parseDate(b.bookDate) - parseDate(a.bookDate);
-    });
-
-    filtered = RECORDS.slice();
-    buildFilters();
-    loadBar.style.width = '100%';
-    setTimeout(function() {
-      document.getElementById('loading-overlay').style.display = 'none';
-      loadBar.style.display = 'none';
-    }, 300);
-    render();
+  /* Sort: in-custody first, then by mugshot presence, then by bookDate desc */
+  RECORDS.sort(function(a, b) {
+    var aHeld = !a.releaseDate ? 0 : 1;
+    var bHeld = !b.releaseDate ? 0 : 1;
+    if (aHeld !== bHeld) return aHeld - bHeld;
+    var aMug = (a.mugshot && a.mugshot.length > 100) ? 0 : 1;
+    var bMug = (b.mugshot && b.mugshot.length > 100) ? 0 : 1;
+    if (aMug !== bMug) return aMug - bMug;
+    return parseDate(b.bookDate) - parseDate(a.bookDate);
   });
 
-  function parseDate(s) {
-    if (!s) return 0;
-    var p = s.split('/');
-    if (p.length === 3) return new Date(p[2], p[0] - 1, p[1]).getTime();
-    return new Date(s).getTime() || 0;
+  filtered = RECORDS.slice();
+  buildFilters();
+  loadBar.style.width = '100%';
+  setTimeout(function() {
+    document.getElementById('loading-overlay').style.display = 'none';
+    loadBar.style.display = 'none';
+  }, 300);
+  renderLanding();
+  render();
+});
+
+function parseDate(s) {
+  if (!s) return 0;
+  var p = s.split('/');
+  if (p.length === 3) return new Date(p[2], p[0] - 1, p[1]).getTime();
+  return new Date(s).getTime() || 0;
+}
+
+/* ----------- VIEW SWITCHING ----------- */
+window.showLanding = function() {
+  currentView = 'landing';
+  document.getElementById('landing-page').classList.remove('hidden');
+  document.getElementById('main').classList.add('hidden');
+  document.getElementById('btn-landing').classList.add('active');
+  document.getElementById('btn-detail').classList.remove('active');
+  renderLanding();
+};
+
+window.showDetail = function() {
+  currentView = 'detail';
+  document.getElementById('landing-page').classList.add('hidden');
+  document.getElementById('main').classList.remove('hidden');
+  document.getElementById('btn-landing').classList.remove('active');
+  document.getElementById('btn-detail').classList.add('active');
+  render();
+};
+
+function goToInmate(jacket) {
+  for (var i = 0; i < filtered.length; i++) {
+    if (filtered[i].jacket === jacket) { idx = i; break; }
   }
+  showDetail();
+}
 
-  /* ---------- FILTERS ---------- */
-  function buildFilters() {
-    var sexes = {}, races = {};
-    RECORDS.forEach(function(r) {
-      if (r.sex) sexes[r.sex] = true;
-      if (r.race) races[r.race] = true;
-    });
-    populateSelect('f-sex', Object.keys(sexes).sort());
-    populateSelect('f-race', Object.keys(races).sort());
-  }
+/* ----------- LIGHTBOX ----------- */
+window.openLightbox = function(src) {
+  if (!src || src.length < 100) return;
+  document.getElementById('lb-img').src = src;
+  document.getElementById('lightbox').classList.add('open');
+};
+window.closeLightbox = function() {
+  document.getElementById('lightbox').classList.remove('open');
+  document.getElementById('lb-img').src = '';
+};
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'Escape') closeLightbox();
+});
 
-  function populateSelect(id, vals) {
-    var sel = document.getElementById(id);
-    vals.forEach(function(v) {
-      var opt = document.createElement('option');
-      opt.value = v; opt.textContent = v;
-      sel.appendChild(opt);
-    });
-  }
-
-  function applyFilters() {
-    var sex = document.getElementById('f-sex').value;
-    var race = document.getElementById('f-race').value;
-    var custody = document.getElementById('f-custody').value;
-    var mug = document.getElementById('f-mug').value;
-    filtered = RECORDS.filter(function(r) {
-      if (sex && r.sex !== sex) return false;
-      if (race && r.race !== race) return false;
-      if (custody === 'held' && r.releaseDate) return false;
-      if (custody === 'released' && !r.releaseDate) return false;
-      if (mug === 'yes' && (!r.mugshot || r.mugshot.length < 100)) return false;
-      if (mug === 'no' && r.mugshot && r.mugshot.length > 100) return false;
-      return true;
-    });
-    idx = 0;
-    updateFilterCount();
-    render();
-  }
-
-  function updateFilterCount() {
-    var count = 0;
-    ['f-sex','f-race','f-custody','f-mug'].forEach(function(id) {
-      if (document.getElementById(id).value) count++;
-    });
-    var badge = document.getElementById('filter-count');
-    if (count > 0) { badge.textContent = count; badge.style.display = 'flex'; }
-    else { badge.style.display = 'none'; }
-  }
-
-  ['f-sex','f-race','f-custody','f-mug'].forEach(function(id) {
-    document.getElementById(id).addEventListener('change', applyFilters);
+/* ----------- LANDING PAGE RENDER ----------- */
+function renderLanding() {
+  var withMug = [];
+  var withoutMug = [];
+  filtered.forEach(function(r) {
+    if (r.mugshot && r.mugshot.length > 100) withMug.push(r);
+    else withoutMug.push(r);
   });
 
-  document.getElementById('clear-filters').addEventListener('click', function() {
-    ['f-sex','f-race','f-custody','f-mug'].forEach(function(id) {
-      document.getElementById(id).value = '';
-    });
-    applyFilters();
-  });
+  document.getElementById('mug-count').textContent = '(' + withMug.length + ')';
+  document.getElementById('soon-count').textContent = '(' + withoutMug.length + ')';
 
-  document.getElementById('filter-toggle').addEventListener('click', function() {
-    document.getElementById('filter-bar').classList.toggle('open');
-  });
-
-  /* ---------- NAVIGATION ---------- */
-  document.getElementById('prev-btn').addEventListener('click', function() {
-    if (idx > 0) { idx--; render(); }
-  });
-  document.getElementById('next-btn').addEventListener('click', function() {
-    if (idx < filtered.length - 1) { idx++; render(); }
-  });
-  document.getElementById('go-btn').addEventListener('click', goToRecord);
-  document.getElementById('jump-input').addEventListener('keydown', function(e) {
-    if (e.key === 'Enter') goToRecord();
-  });
-
-  function goToRecord() {
-    var val = document.getElementById('jump-input').value.trim();
-    if (!val) return;
-    var num = parseInt(val, 10);
-    if (!isNaN(num) && num >= 1 && num <= filtered.length) {
-      idx = num - 1;
-      render();
-    } else {
-      /* Try matching jacket number */
-      for (var i = 0; i < filtered.length; i++) {
-        if (filtered[i].jacket === val) { idx = i; render(); return; }
-      }
-    }
-    document.getElementById('jump-input').value = '';
-  }
-
-  /* Keyboard nav */
-  document.addEventListener('keydown', function(e) {
-    if (e.target.tagName === 'INPUT' || e.target.tagName === 'SELECT') return;
-    if (e.key === 'ArrowLeft' && idx > 0) { idx--; render(); }
-    if (e.key === 'ArrowRight' && idx < filtered.length - 1) { idx++; render(); }
-  });
-
-  /* ---------- SEARCH ---------- */
-  var searchInput = document.getElementById('search-input');
-  var searchResults = document.getElementById('search-results');
-
-  searchInput.addEventListener('input', function() {
-    var q = this.value.trim().toLowerCase();
-    if (q.length < 2) { searchResults.style.display = 'none'; return; }
-    var matches = [];
-    for (var i = 0; i < filtered.length && matches.length < 20; i++) {
-      var r = filtered[i];
-      var fullName = (r.lastName + ' ' + r.firstName + ' ' + (r.middleName || '')).toLowerCase();
-      if (fullName.indexOf(q) > -1 || (r.jacket && r.jacket.indexOf(q) > -1)) {
-        matches.push({ idx: i, rec: r });
-      }
-    }
-    if (matches.length === 0) { searchResults.style.display = 'none'; return; }
-    searchResults.innerHTML = matches.map(function(m) {
-      var name = m.rec.lastName + ', ' + m.rec.firstName + ' ' + (m.rec.middleName || '');
-      return '<div class="search-item" data-idx="' + m.idx + '"><div class="sname">' + esc(name) + '</div><div class="smeta">Jacket #' + esc(m.rec.jacket) + ' &middot; Booked ' + esc(m.rec.bookDate || '?') + '</div></div>';
-    }).join('');
-    searchResults.style.display = 'block';
-  });
-
-  searchResults.addEventListener('click', function(e) {
-    var item = e.target.closest('.search-item');
-    if (!item) return;
-    idx = parseInt(item.getAttribute('data-idx'), 10);
-    searchResults.style.display = 'none';
-    searchInput.value = '';
-    render();
-  });
-
-  document.addEventListener('click', function(e) {
-    if (!e.target.closest('#search-wrap')) searchResults.style.display = 'none';
-  });
-
-  /* ---------- RENDER ---------- */
-  function render() {
-    if (filtered.length === 0) {
-      document.getElementById('counter').textContent = '0 records';
-      document.getElementById('id-info').innerHTML = '<div class="id-row"><div class="id-value">No records match filters</div></div>';
-      document.getElementById('mugshot-wrap').innerHTML = '<span class="mug-placeholder">No photo</span>';
-      document.getElementById('charges-title').textContent = 'CHARGES & BOND (0 CHARGES)';
-      document.getElementById('charges-section').innerHTML = '<div class="no-charges">No records found.</div>';
-      document.getElementById('court-title').textContent = 'VIRGINIA COURT HISTORY (0 CASES)';
-      document.getElementById('court-section').innerHTML = '<div class="no-records-msg">No records found.</div>';
-      return;
-    }
-    var r = filtered[idx];
-    document.getElementById('counter').textContent = 'Record ' + (idx + 1) + ' of ' + filtered.length;
-
-    /* Mugshot */
-    var mugWrap = document.getElementById('mugshot-wrap');
-    if (r.mugshot && r.mugshot.length > 100) {
-      mugWrap.innerHTML = '<img src="' + r.mugshot + '" alt="Mugshot">';
-    } else {
-      mugWrap.innerHTML = '<span class="mug-placeholder">Photo Uploading...</span>';
-    }
-
-    /* ID Info */
-    var name = r.lastName + ', ' + r.firstName + ' ' + (r.middleName || '');
+  /* Mugshot grid - show up to 60 on landing */
+  var mugGrid = document.getElementById('mug-grid');
+  var maxMugs = Math.min(withMug.length, 60);
+  var mugHtml = '';
+  for (var i = 0; i < maxMugs; i++) {
+    var r = withMug[i];
+    var name = r.lastName + ', ' + r.firstName;
     var held = !r.releaseDate;
-    var info = '';
-    info += '<div class="id-row"><div class="id-label">NAME</div><div class="id-value name">' + esc(name) + '</div></div>';
-    info += '<div class="id-row"><div class="id-label">JACKET #</div><div class="id-value">' + esc(r.jacket) + '</div></div>';
-    if (r.age) info += '<div class="id-row"><div class="id-label">AGE</div><div class="id-value">' + esc(r.age) + '</div></div>';
-    if (r.sex || r.race) info += '<div class="id-row"><div class="id-label">SEX / RACE</div><div class="id-value">' + esc((r.sex || '') + ' / ' + (r.race || '')) + '</div></div>';
-    info += '<div class="id-row"><div class="id-label">BOOKED</div><div class="id-value">' + esc(r.bookDate || '-') + '</div></div>';
-    if (r.releaseDate) info += '<div class="id-row"><div class="id-label">RELEASED</div><div class="id-value">' + esc(r.releaseDate) + '</div></div>';
-    info += '<div class="id-row"><div class="id-label">STATUS</div><div class="id-value"><span class="badge ' + (held ? 'badge-held' : 'badge-released') + '">' + (held ? 'IN CUSTODY' : 'RELEASED') + '</span></div></div>';
-    if (r.height) info += '<div class="id-row"><div class="id-label">HEIGHT</div><div class="id-value">' + esc(r.height) + '</div></div>';
-    if (r.weight) info += '<div class="id-row"><div class="id-label">WEIGHT</div><div class="id-value">' + esc(r.weight) + '</div></div>';
-    if (r.hairColor) info += '<div class="id-row"><div class="id-label">HAIR</div><div class="id-value">' + esc(r.hairColor) + '</div></div>';
-    if (r.eyeColor) info += '<div class="id-row"><div class="id-label">EYES</div><div class="id-value">' + esc(r.eyeColor) + '</div></div>';
-    if (r.address) info += '<div class="id-row"><div class="id-label">ADDRESS</div><div class="id-value">' + esc(r.address) + '</div></div>';
-    if (r.arrestAgency) info += '<div class="id-row"><div class="id-label">ARREST AGENCY</div><div class="id-value">' + esc(r.arrestAgency) + '</div></div>';
-    if (r.arrestDate) info += '<div class="id-row"><div class="id-label">ARREST DATE</div><div class="id-value">' + esc(r.arrestDate) + '</div></div>';
-    if (r.schedRelease) info += '<div class="id-row"><div class="id-label">SCHED RELEASE</div><div class="id-value">' + esc(r.schedRelease) + '</div></div>';
-    document.getElementById('id-info').innerHTML = info;
+    mugHtml += '<div class="mug-card" data-jacket="' + esc(r.jacket) + '">' +
+      '<img class="mug-card-img" src="' + r.mugshot + '" alt="' + esc(name) + '" loading="lazy">' +
+      '<div class="mug-card-info">' +
+        '<div class="mug-card-name">' + esc(name) + '</div>' +
+        '<div class="mug-card-meta">Jacket #' + esc(r.jacket) + '</div>' +
+        '<span class="mug-card-badge ' + (held ? 'held' : 'released') + '">' + (held ? 'In Custody' : 'Released') + '</span>' +
+      '</div></div>';
+  }
+  if (withMug.length > maxMugs) {
+    mugHtml += '<div style="grid-column:1/-1;text-align:center;padding:12px;color:#8b949e;font-size:12px;">+ ' + (withMug.length - maxMugs) + ' more with mugshots. Use Browse view to see all.</div>';
+  }
+  mugGrid.innerHTML = mugHtml;
 
-    /* Charges */
-    var charges = r.charges || [];
-    document.getElementById('charges-title').textContent = 'CHARGES & BOND (' + charges.length + ' CHARGE' + (charges.length !== 1 ? 'S' : '') + ')';
-    if (charges.length === 0) {
-      document.getElementById('charges-section').innerHTML = '<div class="no-charges">No charge details on file.</div>';
-    } else {
-      document.getElementById('charges-section').innerHTML = charges.map(function(c) {
-        return '<div class="charge-card"><div class="charge-name">' + esc(c) + '</div></div>';
-      }).join('');
+  /* Coming soon list */
+  var soonList = document.getElementById('soon-list');
+  var maxSoon = Math.min(withoutMug.length, 40);
+  var soonHtml = '';
+  for (var j = 0; j < maxSoon; j++) {
+    var s = withoutMug[j];
+    var sName = s.lastName + ', ' + s.firstName + (s.middleName ? ' ' + s.middleName : '');
+    var chargeText = '';
+    if (s.charges && s.charges.length > 0) chargeText = s.charges[0];
+    soonHtml += '<div class="soon-card" data-jacket="' + esc(s.jacket) + '">' +
+      '<div class="soon-avatar">&#128100;</div>' +
+      '<div class="soon-info">' +
+        '<div class="soon-name">' + esc(sName) + '</div>' +
+        '<div class="soon-detail">Booked ' + esc(s.bookDate || '?') + ' &middot; Jacket #' + esc(s.jacket) + '</div>' +
+        (chargeText ? '<div class="soon-charges">' + esc(chargeText) + '</div>' : '') +
+      '</div></div>';
+  }
+  if (withoutMug.length > maxSoon) {
+    soonHtml += '<div style="grid-column:1/-1;text-align:center;padding:12px;color:#8b949e;font-size:12px;">+ ' + (withoutMug.length - maxSoon) + ' more awaiting photos.</div>';
+  }
+  soonList.innerHTML = soonHtml;
+}
+
+/* Click handlers for landing page cards */
+document.getElementById('mug-grid').addEventListener('click', function(e) {
+  var card = e.target.closest('.mug-card');
+  if (!card) return;
+  goToInmate(card.getAttribute('data-jacket'));
+});
+document.getElementById('soon-list').addEventListener('click', function(e) {
+  var card = e.target.closest('.soon-card');
+  if (!card) return;
+  goToInmate(card.getAttribute('data-jacket'));
+});
+/* ----------- FILTERS ----------- */
+function buildFilters() {
+  var sexes = {}, races = {};
+  RECORDS.forEach(function(r) {
+    if (r.sex) sexes[r.sex] = true;
+    if (r.race) races[r.race] = true;
+  });
+  populateSelect('f-sex', Object.keys(sexes).sort());
+  populateSelect('f-race', Object.keys(races).sort());
+}
+
+function populateSelect(id, vals) {
+  var sel = document.getElementById(id);
+  vals.forEach(function(v) {
+    var opt = document.createElement('option');
+    opt.value = v; opt.textContent = v;
+    sel.appendChild(opt);
+  });
+}
+
+function applyFilters() {
+  var sex = document.getElementById('f-sex').value;
+  var race = document.getElementById('f-race').value;
+  var custody = document.getElementById('f-custody').value;
+  var mug = document.getElementById('f-mug').value;
+  filtered = RECORDS.filter(function(r) {
+    if (sex && r.sex !== sex) return false;
+    if (race && r.race !== race) return false;
+    if (custody === 'held' && r.releaseDate) return false;
+    if (custody === 'released' && !r.releaseDate) return false;
+    if (mug === 'yes' && (!r.mugshot || r.mugshot.length <= 100)) return false;
+    if (mug === 'no' && r.mugshot && r.mugshot.length > 100) return false;
+    return true;
+  });
+  idx = 0;
+  updateFilterCount();
+  if (currentView === 'landing') renderLanding();
+  else render();
+}
+
+function updateFilterCount() {
+  var count = 0;
+  if (document.getElementById('f-sex').value) count++;
+  if (document.getElementById('f-race').value) count++;
+  if (document.getElementById('f-custody').value) count++;
+  if (document.getElementById('f-mug').value) count++;
+  var badge = document.getElementById('filter-count');
+  if (count > 0) {
+    badge.textContent = count;
+    badge.style.display = 'flex';
+    document.getElementById('active-filters').style.display = 'block';
+    document.getElementById('active-filters').textContent = filtered.length + ' of ' + RECORDS.length + ' records shown';
+  } else {
+    badge.style.display = 'none';
+    document.getElementById('active-filters').style.display = 'none';
+  }
+  document.getElementById('counter').textContent = filtered.length > 0 ? 'Record ' + (idx + 1) + ' of ' + filtered.length : '0 records';
+}
+
+document.getElementById('f-sex').addEventListener('change', applyFilters);
+document.getElementById('f-race').addEventListener('change', applyFilters);
+document.getElementById('f-custody').addEventListener('change', applyFilters);
+document.getElementById('f-mug').addEventListener('change', applyFilters);
+document.getElementById('clear-filters').addEventListener('click', function() {
+  document.getElementById('f-sex').value = '';
+  document.getElementById('f-race').value = '';
+  document.getElementById('f-custody').value = '';
+  document.getElementById('f-mug').value = '';
+  applyFilters();
+});
+document.getElementById('filter-toggle').addEventListener('click', function() {
+  document.getElementById('filter-bar').classList.toggle('open');
+});
+
+/* ----------- NAVIGATION ----------- */
+function goToRecord() {
+  var val = document.getElementById('jump-input').value.trim();
+  if (!val) return;
+  var num = parseInt(val, 10);
+  if (!isNaN(num) && num >= 1 && num <= filtered.length) {
+    idx = num - 1;
+    showDetail();
+  } else {
+    for (var i = 0; i < filtered.length; i++) {
+      if (filtered[i].jacket === val) { idx = i; showDetail(); return; }
     }
+  }
+  document.getElementById('jump-input').value = '';
+}
 
-    /* Court History */
-    renderCourt(r);
+document.getElementById('go-btn').addEventListener('click', goToRecord);
+document.getElementById('jump-input').addEventListener('keydown', function(e) { if (e.key === 'Enter') goToRecord(); });
+document.getElementById('prev-btn').addEventListener('click', function() { if (idx > 0) { idx--; render(); } });
+document.getElementById('next-btn').addEventListener('click', function() { if (idx < filtered.length - 1) { idx++; render(); } });
+
+/* Keyboard nav */
+document.addEventListener('keydown', function(e) {
+  if (e.target.tagName === 'INPUT' || e.target.tagName === 'SELECT') return;
+  if (currentView !== 'detail') return;
+  if (e.key === 'ArrowLeft' && idx > 0) { idx--; render(); }
+  if (e.key === 'ArrowRight' && idx < filtered.length - 1) { idx++; render(); }
+});
+
+/* ----------- SEARCH ----------- */
+var searchInput = document.getElementById('search-input');
+var searchResults = document.getElementById('search-results');
+
+searchInput.addEventListener('input', function() {
+  var q = this.value.trim().toLowerCase();
+  if (q.length < 2) { searchResults.style.display = 'none'; return; }
+  var matches = [];
+  for (var i = 0; i < filtered.length && matches.length < 20; i++) {
+    var r = filtered[i];
+    var fullName = (r.lastName + ' ' + r.firstName + ' ' + (r.middleName || '')).toLowerCase();
+    if (fullName.indexOf(q) > -1 || (r.jacket && r.jacket.indexOf(q) > -1)) {
+      matches.push({ idx: i, rec: r });
+    }
+  }
+  if (matches.length === 0) { searchResults.style.display = 'none'; return; }
+  searchResults.innerHTML = matches.map(function(m) {
+    var name = m.rec.lastName + ', ' + m.rec.firstName + ' ' + (m.rec.middleName || '');
+    return '<div class="search-item" data-idx="' + m.idx + '"><div class="sname">' + esc(name) + '</div><div class="smeta">Jacket #' + esc(m.rec.jacket) + ' &middot; Booked ' + esc(m.rec.bookDate || '?') + '</div></div>';
+  }).join('');
+  searchResults.style.display = 'block';
+});
+
+searchResults.addEventListener('click', function(e) {
+  var item = e.target.closest('.search-item');
+  if (!item) return;
+  idx = parseInt(item.getAttribute('data-idx'), 10);
+  searchResults.style.display = 'none';
+  searchInput.value = '';
+  showDetail();
+});
+
+document.addEventListener('click', function(e) {
+  if (!e.target.closest('#search-wrap')) searchResults.style.display = 'none';
+});
+/* ----------- RENDER (DETAIL VIEW) ----------- */
+function render() {
+  if (filtered.length === 0) {
+    document.getElementById('counter').textContent = '0 records';
+    document.getElementById('id-info').innerHTML = '<div class="id-row"><div class="id-value">No records match filters</div></div>';
+    document.getElementById('mugshot-wrap').innerHTML = '<span class="mug-placeholder">No photo</span>';
+    document.getElementById('charges-title').textContent = 'CHARGES & BOND (0 CHARGES)';
+    document.getElementById('charges-section').innerHTML = '<div class="no-charges">No records found.</div>';
+    document.getElementById('court-title').textContent = 'VIRGINIA COURT HISTORY (0 CASES)';
+    document.getElementById('court-section').innerHTML = '<div class="no-records-msg">No records found.</div>';
+    return;
+  }
+  var r = filtered[idx];
+  document.getElementById('counter').textContent = 'Record ' + (idx + 1) + ' of ' + filtered.length;
+
+  /* Mugshot */
+  var mugWrap = document.getElementById('mugshot-wrap');
+  if (r.mugshot && r.mugshot.length > 100) {
+    mugWrap.innerHTML = '<img src="' + r.mugshot + '" alt="Mugshot" onclick="openLightbox(this.src)"><span class="zoom-hint">Click to enlarge</span>';
+  } else {
+    mugWrap.innerHTML = '<span class="mug-placeholder">Photo Uploading...</span>';
   }
 
-  /* ---------- COURT HISTORY (OCIS) ---------- */
-  function renderCourt(r) {
-    var name = (r.firstName + ' ' + r.lastName).trim();
-    var courtKey = name.toUpperCase();
-    var cases = COURT[courtKey] || COURT[r.jacket] || [];
+  /* ID Info */
+  var name = r.lastName + ', ' + r.firstName + ' ' + (r.middleName || '');
+  var held = !r.releaseDate;
+  var info = '';
+  info += '<div class="id-row"><div class="id-label">NAME</div><div class="id-value name">' + esc(name) + '</div></div>';
+  info += '<div class="id-row"><div class="id-label">JACKET #</div><div class="id-value">' + esc(r.jacket) + '</div></div>';
+  if (r.age) info += '<div class="id-row"><div class="id-label">AGE</div><div class="id-value">' + esc(r.age) + '</div></div>';
+  if (r.sex || r.race) info += '<div class="id-row"><div class="id-label">SEX / RACE</div><div class="id-value">' + esc((r.sex || '') + ' / ' + (r.race || '')) + '</div></div>';
+  info += '<div class="id-row"><div class="id-label">BOOKED</div><div class="id-value">' + esc(r.bookDate || '-') + '</div></div>';
+  if (r.releaseDate) info += '<div class="id-row"><div class="id-label">RELEASED</div><div class="id-value">' + esc(r.releaseDate) + '</div></div>';
+  info += '<div class="id-row"><div class="id-label">STATUS</div><div class="id-value"><span class="badge ' + (held ? 'badge-held' : 'badge-released') + '">' + (held ? 'IN CUSTODY' : 'RELEASED') + '</span></div></div>';
+  if (r.height) info += '<div class="id-row"><div class="id-label">HEIGHT</div><div class="id-value">' + esc(r.height) + '</div></div>';
+  if (r.weight) info += '<div class="id-row"><div class="id-label">WEIGHT</div><div class="id-value">' + esc(r.weight) + '</div></div>';
+  if (r.hairColor) info += '<div class="id-row"><div class="id-label">HAIR</div><div class="id-value">' + esc(r.hairColor) + '</div></div>';
+  if (r.eyeColor) info += '<div class="id-row"><div class="id-label">EYES</div><div class="id-value">' + esc(r.eyeColor) + '</div></div>';
+  if (r.address) info += '<div class="id-row"><div class="id-label">ADDRESS</div><div class="id-value">' + esc(r.address) + '</div></div>';
+  if (r.arrestAgency) info += '<div class="id-row"><div class="id-label">ARREST AGENCY</div><div class="id-value">' + esc(r.arrestAgency) + '</div></div>';
+  if (r.arrestDate) info += '<div class="id-row"><div class="id-label">ARREST DATE</div><div class="id-value">' + esc(r.arrestDate) + '</div></div>';
+  if (r.schedRelease) info += '<div class="id-row"><div class="id-label">SCHED RELEASE</div><div class="id-value">' + esc(r.schedRelease) + '</div></div>';
+  document.getElementById('id-info').innerHTML = info;
 
-    /* Also try lastName, firstName format */
-    if (cases.length === 0) {
-      courtKey = (r.lastName + ', ' + r.firstName).toUpperCase();
-      cases = COURT[courtKey] || [];
-    }
-
-    document.getElementById('court-title').textContent = 'VIRGINIA COURT HISTORY (' + cases.length + ' CASE' + (cases.length !== 1 ? 'S' : '') + ')';
-
-    if (cases.length === 0) {
-      document.getElementById('court-section').innerHTML = '<div class="no-records-msg"><em>No Virginia court records found.</em></div>';
-      return;
-    }
-
-    document.getElementById('court-section').innerHTML = cases.map(function(c, ci) {
-      var html = '<div class="court-card" data-ci="' + ci + '">';
-      html += '<div class="court-charge">' + esc(c.charge || c.chargeDescription || 'Unknown Charge') + '</div>';
-      html += '<div class="court-meta">';
-      if (c.court) html += '<span>' + esc(c.court) + '</span>';
-      if (c.offenseDate) html += '<span>Offense: ' + esc(c.offenseDate) + '</span>';
-      if (c.dispositionCode) {
-        html += '<span class="tag ' + dispTagClass(c.dispositionCode) + '">' + dispLabel(c.dispositionCode) + '</span>';
-      }
-      if (c.isRelated) html += '<span class="tag-related">&x26A0; Potentially Related</span>';
-      html += '</div>';
-      html += '<div class="case-detail">';
-      if (c.caseNumber) html += '<div class="detail-row"><span class="detail-label">Case #:</span> ' + esc(c.caseNumber) + '</div>';
-      if (c.codeSection) html += '<div class="detail-row"><span class="detail-label">Code Section:</span> ' + esc(c.codeSection) + '</div>';
-      if (c.defendant) html += '<div class="detail-row"><span class="detail-label">Defendant:</span> ' + esc(c.defendant) + '</div>';
-      if (c.disposedDate) html += '<div class="detail-row"><span class="detail-label">Disposed:</span> ' + esc(c.disposedDate) + '</div>';
-      if (c.sentence) html += '<div class="detail-row"><span class="detail-label">Sentence:</span> ' + esc(c.sentence) + '</div>';
-      html += '</div></div>';
-      return html;
+  /* Charges */
+  var charges = r.charges || [];
+  document.getElementById('charges-title').textContent = 'CHARGES & BOND (' + charges.length + ' CHARGE' + (charges.length !== 1 ? 'S' : '') + ')';
+  if (charges.length === 0) {
+    document.getElementById('charges-section').innerHTML = '<div class="no-charges">No charge details on file.</div>';
+  } else {
+    document.getElementById('charges-section').innerHTML = charges.map(function(c) {
+      return '<div class="charge-card"><div class="charge-name">' + esc(c) + '</div></div>';
     }).join('');
   }
 
-  document.getElementById('court-section').addEventListener('click', function(e) {
-    var card = e.target.closest('.court-card');
-    if (card) card.classList.toggle('expanded');
-  });
+  /* Court History */
+  renderCourt(r);
+}
 
-  function dispTagClass(code) {
-    if (!code) return 'tag-other';
-    var c = code.toUpperCase();
-    if (c === 'G' || c === 'GA') return 'tag-guilty';
-    if (c === 'NG') return 'tag-ng';
-    if (c === 'D') return 'tag-dismissed';
-    if (c === 'NP') return 'tag-nolle';
-    return 'tag-other';
+/* ----------- COURT HISTORY (OCIS) ----------- */
+function renderCourt(r) {
+  var name = (r.firstName + ' ' + r.lastName).trim();
+  var courtKey = name.toUpperCase();
+  var cases = COURT[courtKey] || COURT[r.jacket] || [];
+
+  /* Also try lastName, firstName format */
+  if (cases.length === 0) {
+    courtKey = (r.lastName + ', ' + r.firstName).toUpperCase();
+    cases = COURT[courtKey] || [];
   }
 
-  function dispLabel(code) {
-    if (!code) return code;
-    var map = { 'G': 'Guilty', 'GA': 'Guilty (Absentia)', 'NG': 'Not Guilty', 'D': 'Dismissed', 'NP': 'Nolle Prosequi', 'PP': 'Prepaid', 'C': 'Continued', 'W': 'Waived', 'F': 'Final' };
-    return map[code.toUpperCase()] || code;
+  document.getElementById('court-title').textContent = 'VIRGINIA COURT HISTORY (' + cases.length + ' CASE' + (cases.length !== 1 ? 'S' : '') + ')';
+
+  if (cases.length === 0) {
+    document.getElementById('court-section').innerHTML = '<div class="no-records-msg"><em>No Virginia court records found.</em></div>';
+    return;
   }
 
-  /* ---------- HELPERS ---------- */
-  function esc(s) {
-    if (!s) return '';
-    var d = document.createElement('div');
-    d.textContent = String(s);
-    return d.innerHTML;
-  }
+  document.getElementById('court-section').innerHTML = cases.map(function(c, ci) {
+    var html = '<div class="court-card" data-ci="' + ci + '">';
+    html += '<div class="court-charge">' + esc(c.charge || c.chargeDescription || c.chargeDesc || 'Unknown Charge') + '</div>';
+    html += '<div class="court-meta">';
+    if (c.court) html += '<span>' + esc(c.court) + '</span>';
+    if (c.offenseDate) html += '<span>Offense: ' + esc(c.offenseDate) + '</span>';
+    if (c.dispositionCode) {
+      html += '<span class="tag ' + dispTagClass(c.dispositionCode) + '">' + dispLabel(c.dispositionCode) + '</span>';
+    }
+    if (c.isRelated) html += '<span class="tag-related">&x26A0; Potentially Related</span>';
+    html += '</div>';
+    html += '<div class="case-detail">';
+    if (c.caseNumber) html += '<div class="detail-row"><span class="detail-label">Case #:</span> ' + esc(c.caseNumber) + '</div>';
+    if (c.codeSection) html += '<div class="detail-row"><span class="detail-label">Code Section:</span> ' + esc(c.codeSection) + '</div>';
+    if (c.defendant) html += '<div class="detail-row"><span class="detail-label">Defendant:</span> ' + esc(c.defendant) + '</div>';
+    if (c.disposedDate) html += '<div class="detail-row"><span class="detail-label">Disposed:</span> ' + esc(c.disposedDate) + '</div>';
+    if (c.sentence) html += '<div class="detail-row"><span class="detail-label">Sentence:</span> ' + esc(c.sentence) + '</div>';
+    html += '</div></div>';
+    return html;
+  }).join('');
+}
 
-  /* ---------- SERVICE WORKER ---------- */
-  if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('sw.js').catch(function() {});
-  }
+document.getElementById('court-section').addEventListener('click', function(e) {
+  var card = e.target.closest('.court-card');
+  if (card) card.classList.toggle('expanded');
+});
+
+function dispTagClass(code) {
+  if (!code) return 'tag-other';
+  var c = code.toUpperCase();
+  if (c === 'G' || c === 'GA') return 'tag-guilty';
+  if (c === 'NG') return 'tag-ng';
+  if (c === 'D') return 'tag-dismissed';
+  if (c === 'NP') return 'tag-nolle';
+  return 'tag-other';
+}
+
+function dispLabel(code) {
+  if (!code) return code;
+  var map = { 'G': 'Guilty', 'GA': 'Guilty (Absentia)', 'NG': 'Not Guilty', 'D': 'Dismissed', 'NP': 'Nolle Prosequi', 'PP': 'Prepaid', 'C': 'Continued', 'W': 'Waived', 'F': 'Final' };
+  return map[code.toUpperCase()] || code;
+}
+
+/* ----------- HELPERS ----------- */
+function esc(s) {
+  if (!s) return '';
+  var d = document.createElement('div');
+  d.textContent = String(s);
+  return d.innerHTML;
+}
+
+/* ----------- SERVICE WORKER ----------- */
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('sw.js').catch(function() {});
+}
 })();
 </script>
 </body>
