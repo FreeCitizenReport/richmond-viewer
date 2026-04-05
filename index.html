@@ -339,8 +339,8 @@ Promise.all([
     if (aMug !== bMug) return aMug - bMug;
     /* Among mugshot records, sort by mugshotDate desc (most recently scraped first) */
     if (aMug === 0 && bMug === 0) {
-      var aMd = a.mugshotDate ? parseDate(a.mugshotDate) : 0;
-      var bMd = b.mugshotDate ? parseDate(b.mugshotDate) : 0;
+      var aMd = a.mugshotDate ? new Date(a.mugshotDate).getTime() : 0;
+      var bMd = b.mugshotDate ? new Date(b.mugshotDate).getTime() : 0;
       if (aMd !== bMd) return bMd - aMd;
     }
     var aHeld = !a.releaseDate ? 0 : 1;
