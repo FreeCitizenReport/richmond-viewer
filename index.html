@@ -358,6 +358,32 @@ Promise.all([
   render();
 });
 
+/* AUTO-REFRESH: poll data.json every 5 min, show refresh banner if new bookings appear */
+window._lastDataLen = 0;
+window._lastTopJacket = "";
+function _checkForUpdates() {
+  fetch("data.json?v=" + Date.now(), {cache: "no-store"}).then(function(r){return r.json()}).then(function(newData){
+    if (!newData || !newData.length) return;
+    var inCust = newData.filter(function(r){return !r.releaseDate && r.mugshot && r.mugshot.length > 100});
+    inCust.sort(function(a,b){return parseDate(b.bookDate) - parseDate(a.bookDate)});
+    var topJ = inCust[0] ? inCust[0].jacket : "";
+    if (window._lastDataLen === 0) { window._lastDataLen = newData.length; window._lastTopJacket = topJ; return; }
+    if (newData.length !== window._lastDataLen || topJ !== window._lastTopJacket) {
+      var b = document.getElementById("refresh-banner");
+      if (!b) {
+        b = document.createElement("div");
+        b.id = "refresh-banner";
+        b.style.cssText = "position:fixed;top:12px;right:12px;z-index:2147483647;background:#0a84ff;color:#fff;padding:10px 18px;border-radius:8px;cursor:pointer;font-weight:600;box-shadow:0 4px 14px rgba(0,0,0,.35);font-family:-apple-system,sans-serif;font-size:14px;";
+        b.textContent = "New bookings available — click to refresh";
+        b.onclick = function(){ window.location.reload() };
+        document.body.appendChild(b);
+      }
+    }
+  }).catch(function(){});
+}
+setInterval(_checkForUpdates, 5 * 60 * 1000);
+setTimeout(_checkForUpdates, 30 * 1000);
+
 function parseDate(s) {
   if (!s) return 0;
   var p = s.split('/');
