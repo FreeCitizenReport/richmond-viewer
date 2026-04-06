@@ -338,13 +338,18 @@ Promise.all([
     var aHeld = !a.releaseDate ? 0 : 1;
     var bHeld = !b.releaseDate ? 0 : 1;
     if (aHeld !== bHeld) return aHeld - bHeld;
-    /* Most recent bookDate first */
-    var bd = parseDate(b.bookDate) - parseDate(a.bookDate);
-    if (bd !== 0) return bd;
-    /* Tiebreaker: has mugshot above no mugshot */
+    /* Has mugshot above no mugshot */
     var aMug = (a.mugshot && a.mugshot.length > 100) ? 0 : 1;
     var bMug = (b.mugshot && b.mugshot.length > 100) ? 0 : 1;
-    return aMug - bMug;
+    if (aMug !== bMug) return aMug - bMug;
+    /* Among those with mugshots: most recently scraped first (mugshotDate desc) */
+    if (aMug === 0) {
+      var aMS = a.mugshotDate ? new Date(a.mugshotDate).getTime() : 0;
+      var bMS = b.mugshotDate ? new Date(b.mugshotDate).getTime() : 0;
+      if (aMS !== bMS) return bMS - aMS;
+    }
+    /* Fallback: most recent bookDate */
+    return parseDate(b.bookDate) - parseDate(a.bookDate);
 });
 
   filtered = RECORDS.slice();
