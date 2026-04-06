@@ -332,23 +332,16 @@ Promise.all([
   RECORDS = results[0];
   COURT = results[1] || {};
 
-  /* Sort: mugshots first (most recently scraped on top via mugshotDate), then in-custody, then bookDate desc */
+  /* Sort: in-custody first, has mugshot above no mugshot, then most recent bookDate desc */
   RECORDS.sort(function(a, b) {
     /* In-custody first, released second */
     var aHeld = !a.releaseDate ? 0 : 1;
     var bHeld = !b.releaseDate ? 0 : 1;
     if (aHeld !== bHeld) return aHeld - bHeld;
-    /* Has mugshot above no mugshot */
+    /* Has mugshot above no mugshot, then most recent bookDate first */
     var aMug = (a.mugshot && a.mugshot.length > 100) ? 0 : 1;
     var bMug = (b.mugshot && b.mugshot.length > 100) ? 0 : 1;
     if (aMug !== bMug) return aMug - bMug;
-    /* Among those with mugshots: most recently scraped first (mugshotDate desc) */
-    if (aMug === 0) {
-      var aMS = a.mugshotDate ? new Date(a.mugshotDate).getTime() : 0;
-      var bMS = b.mugshotDate ? new Date(b.mugshotDate).getTime() : 0;
-      if (aMS !== bMS) return bMS - aMS;
-    }
-    /* Fallback: most recent bookDate */
     return parseDate(b.bookDate) - parseDate(a.bookDate);
 });
 
