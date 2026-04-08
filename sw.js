@@ -1,18 +1,20 @@
-const CACHE = 'richmond-v3';
+const CACHE = 'richmond-v4';
 self.addEventListener('install', () => self.skipWaiting());
 self.addEventListener('activate', e => e.waitUntil(
   caches.keys().then(keys => Promise.all(keys.filter(k => k !== CACHE).map(k => caches.delete(k))))
-  .then(() => clients.claim())
+    .then(() => clients.claim())
 ));
 self.addEventListener('fetch', e => {
-  const url = new URL(e.request.url);
-  const path = url.pathname;
-  if (!path.endsWith('data.json')) return;
-  const cacheKey = new Request(url.origin + url.pathname);
+  // Never cache data files — always fetch fresh so scraper updates show immediately
+  if (e.request.url.includes('data.json') || e.request.url.includes('court_data.json')) {
+    e.respondWith(fetch(e.request));
+    return;
+  }
   e.respondWith(
-    fetch(e.request, {cache: 'no-store'}).then(resp => {
-      if (resp.ok) caches.open(CACHE).then(cache => cache.put(cacheKey, resp.clone()));
+    caches.match(e.request).then(cached => cached || fetch(e.request).then(resp => {
+      const clone = resp.clone();
+      caches.open(CACHE).then(c => c.put(e.request, clone));
       return resp;
-    }).catch(() => caches.open(CACHE).then(cache => cache.match(cacheKey)))
+    }))
   );
 });
