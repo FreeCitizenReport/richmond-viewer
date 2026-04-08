@@ -443,7 +443,7 @@ function renderLanding() {
       '<img class="mug-card-img" src="' + r.mugshot + '" alt="' + esc(name) + '" loading="lazy">' +
       '<div class="mug-card-info">' +
         '<div class="mug-card-name">' + esc(name) + '</div>' +
-        '<div class="mug-card-meta">Jacket #' + esc(r.jacket) + '</div>' +
+        '<div class="mug-card-meta">" + r.bookDate + "' + esc(r.jacket) + '</div>' +
         '<span class="mug-card-badge ' + (held ? 'held' : 'released') + '">' + (held ? 'In Custody' : 'Released') + '</span>' +
       '</div></div>';
   }
@@ -465,7 +465,7 @@ function renderLanding() {
       '<div class="soon-avatar">&#128100;</div>' +
       '<div class="soon-info">' +
         '<div class="soon-name">' + esc(sName) + '</div>' +
-        '<div class="soon-detail">Booked ' + esc(s.bookDate || '?') + ' &middot; Jacket #' + esc(s.jacket) + '</div>' +
+        '<div class="soon-detail">Booked ' + esc(s.bookDate || '?') + ' &middot; " + r.bookDate + "' + esc(s.jacket) + '</div>' +
         (chargeText ? '<div class="soon-charges">' + esc(chargeText) + '</div>' : '') +
       '</div></div>';
   }
@@ -607,7 +607,7 @@ searchInput.addEventListener('input', function() {
   if (matches.length === 0) { searchResults.style.display = 'none'; return; }
   searchResults.innerHTML = matches.map(function(m) {
     var name = m.rec.lastName + ', ' + m.rec.firstName + ' ' + (m.rec.middleName || '');
-    return '<div class="search-item" data-idx="' + m.idx + '"><div class="sname">' + esc(name) + '</div><div class="smeta">Jacket #' + esc(m.rec.jacket) + ' &middot; Booked ' + esc(m.rec.bookDate || '?') + '</div></div>';
+    return '<div class="search-item" data-idx="' + m.idx + '"><div class="sname">' + esc(name) + '</div><div class="smeta">" + r.bookDate + "' + esc(m.rec.jacket) + ' &middot; Booked ' + esc(m.rec.bookDate || '?') + '</div></div>';
   }).join('');
   searchResults.style.display = 'block';
 });
