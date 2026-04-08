@@ -452,7 +452,7 @@ function renderLanding() {
   var mugHtml = '';
   for (var i = 0; i < maxMugs; i++) {
     var r = withMug[i];
-    var name = (r.lastName && r.firstName) ? r.lastName + ', ' + r.firstName : (r.lastName || r.firstName || 'Jacket #' + r.jacket);
+    var name = (r.lastName || r.firstName) ? ((r.lastName || '') + (r.lastName && r.firstName ? ', ' : '') + (r.firstName || '')) : '— name unavailable —';
     var held = !r.releaseDate;
     mugHtml += '<div class="mug-card" data-jacket="' + esc(r.jacket) + '">' +
       '<img class="mug-card-img" src="' + r.mugshot + '" alt="' + esc(name) + '" loading="lazy">' +
