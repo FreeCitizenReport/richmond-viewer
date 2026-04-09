@@ -1,13 +1,13 @@
-const CACHE = 'richmond-v4';
+const CACHE = 'richmond-v5';
 self.addEventListener('install', () => self.skipWaiting());
 self.addEventListener('activate', e => e.waitUntil(
   caches.keys().then(keys => Promise.all(keys.filter(k => k !== CACHE).map(k => caches.delete(k))))
     .then(() => clients.claim())
 ));
 self.addEventListener('fetch', e => {
-  // Never cache data files — always fetch fresh so scraper updates show immediately
-  if (e.request.url.includes('data.json') || e.request.url.includes('court_data.json')) {
-    e.respondWith(fetch(e.request));
+  const url = e.request.url;
+  if (e.request.mode === 'navigate' || url.includes('data.json') || url.includes('court_data.json') || url.endsWith('index.html') || url.endsWith('/')) {
+    e.respondWith(fetch(e.request, { cache: 'no-store' }).catch(() => caches.match(e.request)));
     return;
   }
   e.respondWith(
