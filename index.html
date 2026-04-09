@@ -657,7 +657,7 @@ function render() {
   var name = r.lastName + ', ' + r.firstName + ' ' + (r.middleName || '');
   var held = !r.releaseDate;
   var info = '';
-  info += '<div class="id-row"><div class="id-label">NAME</div><div class="id-value name">' + esc(name) + '</div></div>';
+  info += '<div class="id-row"><div class="id-label">NAME</div><div class="id-value name">' + esc(name) + '</div></div>';var dateStr = r.bookDate && r.bookDate !== 'NO_DATE' ? 'Booked ' + r.bookDate : (r.mugshotDate ? 'Data collected: ' + r.mugshotDate.substring(0, 19).replace('T', ' ') : '');if (dateStr) info += '<div class="id-row"><div class="id-label">DATE</div><div class="id-value">' + esc(dateStr) + '</div></div>';
   info += '<div class="id-row"><div class="id-label">JACKET #</div><div class="id-value">' + esc(r.jacket) + '</div></div>';
   if (r.age) info += '<div class="id-row"><div class="id-label">AGE</div><div class="id-value">' + esc(r.age) + '</div></div>';
   if (r.sex || r.race) info += '<div class="id-row"><div class="id-label">SEX / RACE</div><div class="id-value">' + esc((r.sex || '') + ' / ' + (r.race || '')) + '</div></div>';
