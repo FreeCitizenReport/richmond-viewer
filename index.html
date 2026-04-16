@@ -333,9 +333,7 @@ Promise.all([
   COURT = results[1] || {};
 
   /* Sort: in-custody first, has mugshot above no mugshot, then most recent mugshotDate desc */
-  RECORDS.sort(function(a, b) { /* In-custody first */ var aCust = a.releaseDate ? 1 : 0; var bCust = b.releaseDate ? 1 : 0; if (aCust !== bCust) return aCust - bCust; /* Mugshots first (within custody group) */ var aMug = (a.mugshot && a.mugshot.length > 100) ? 1 : 0; var bMug = (b.mugshot && b.mugshot.length > 100) ? 1 : 0; if (aMug !== bMug) return bMug - aMug; /* Most recent bookDate first */ var aDate = (a.bookDate && a.bookDate !== 'NO_DATE') ? parseDate(a.bookDate) : 0; var bDate = (b.bookDate && b.bookDate !== 'NO_DATE') ? parseDate(b.bookDate) : 0; 
-    return bDate - aDate;
-  });
+  RECORDS.sort(function(a, b) { /* Most recent bookDate first */ var aDate = (a.bookDate && a.bookDate !== 'NO_DATE') ? parseDate(a.bookDate) : 0; var bDate = (b.bookDate && b.bookDate !== 'NO_DATE') ? parseDate(b.bookDate) : 0; if (aDate !== bDate) return bDate - aDate; /* Mugshots first within same date */ var aMug = (a.mugshot && a.mugshot.length > 100) ? 1 : 0; var bMug = (b.mugshot && b.mugshot.length > 100) ? 1 : 0; return bMug - aMug; });
 
   filtered = RECORDS.slice();
   buildFilters();
