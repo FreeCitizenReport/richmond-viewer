@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Richmond City Jail – interactive scraper
+Richmond City Jail â interactive scraper
 ========================================
 Run this script locally.  A real Chromium window opens so you can solve
 each CAPTCHA yourself.  The script intercepts every API response in the
@@ -13,7 +13,7 @@ Usage:
     python scraper.py
 
 Tip: you only have to solve the CAPTCHA once per letter (A-Z).
-Everything else – expanding rows, collecting details – is automated.
+Everything else â expanding rows, collecting details â is automated.
 """
 
 import asyncio, json, re, sys
@@ -366,6 +366,22 @@ def save_files(inmates: list) -> None:
                 pass
         return datetime.min
 
+    # Carry over released inmates from previous data.json
+    if Path("data.json").exists():
+        try:
+            old_data = json.loads(Path("data.json").read_text())
+            live_jackets = {r['jacket'] for r in inmates}
+            today_str = datetime.now().strftime('%m/%d/%Y')
+            carried = 0
+            for rec in old_data:
+                if rec.get('jacket') and rec['jacket'] not in live_jackets:
+                    if not rec.get('releaseDate'):
+                        rec['releaseDate'] = today_str
+                    inmates.append(rec)
+                    carried += 1
+            print(f'Carried over {carried} released/dropped records from previous data')
+        except Exception as e:
+            print(f'Warning: could not merge existing data.json - {e}')
     inmates.sort(key=lambda x: parse_date(x.get("bookDate", "")), reverse=True)
 
     Path("data.json").write_text(json.dumps(inmates))
