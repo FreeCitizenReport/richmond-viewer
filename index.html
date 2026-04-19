@@ -344,7 +344,7 @@ Promise.all([
       var ba = parseDate(a.bookDate);
       var bb = parseDate(b.bookDate);
       if (ba !== bb) return bb - ba;
-      return (b.jacket || '').localeCompare(a.jacket || '');
+      var md=(b.mugshotDate||b.bookDate||'')>(a.mugshotDate||a.bookDate||'')?1:(b.mugshotDate||b.bookDate||'')<(a.mugshotDate||a.bookDate||'')?-1:0;if(md!==0)return md;return parseInt(b.jacket||0)-parseInt(a.jacket||0);
     });
 
   filtered = RECORDS.slice();
@@ -365,7 +365,7 @@ function _checkForUpdates() {
   fetch("data.json?v=" + Date.now(), {cache: "no-store"}).then(function(r){return r.json()}).then(function(newData){
     if (!newData || !newData.length) return;
     var inCust = newData.filter(function(r){return !r.releaseDate && r.mugshot && r.mugshot.length > 100});
-    inCust.sort(function(a,b){return parseDate(b.bookDate)-parseDate(a.bookDate)});
+    inCust.sort(function(a,b){var da=a.mugshotDate||a.bookDate||'';var db=b.mugshotDate||b.bookDate||'';return db>da?1:db<da?-1:parseDate(b.bookDate)-parseDate(a.bookDate)});
     var topJ = inCust[0] ? inCust[0].jacket : "";
     if (window._lastDataLen === 0) { window._lastDataLen = newData.length; window._lastTopJacket = topJ; return; }
     if (newData.length !== window._lastDataLen || topJ !== window._lastTopJacket) {
