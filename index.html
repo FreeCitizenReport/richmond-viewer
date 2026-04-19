@@ -334,10 +334,13 @@ Promise.all([
 
   /* Sort: in-custody first, has mugshot above no mugshot, then most recent mugshotDate desc */
   RECORDS.sort(function(a, b) {
-      // Canonical sort: firstSeenAt DESC, bookDate DESC, jacket DESC (SORT_RULE.md)
-      var fa = a.firstSeenAt || '';
-      var fb = b.firstSeenAt || '';
-      if (fa !== fb) return fb.localeCompare(fa);
+      // Sort: in-custody first, has mugshot first, then most recent bookDate desc
+      var aCust = a.releaseDate ? 1 : 0;
+      var bCust = b.releaseDate ? 1 : 0;
+      if (aCust !== bCust) return aCust - bCust;
+      var aMug = (a.mugshot && a.mugshot.length > 100) ? 0 : 1;
+      var bMug = (b.mugshot && b.mugshot.length > 100) ? 0 : 1;
+      if (aMug !== bMug) return aMug - bMug;
       var ba = parseDate(a.bookDate);
       var bb = parseDate(b.bookDate);
       if (ba !== bb) return bb - ba;
@@ -362,7 +365,7 @@ function _checkForUpdates() {
   fetch("data.json?v=" + Date.now(), {cache: "no-store"}).then(function(r){return r.json()}).then(function(newData){
     if (!newData || !newData.length) return;
     var inCust = newData.filter(function(r){return !r.releaseDate && r.mugshot && r.mugshot.length > 100});
-    inCust.sort(function(a,b){var fa=a.firstSeenAt||'';var fb=b.firstSeenAt||'';if(fa!==fb)return fb.localeCompare(fa);return parseDate(b.bookDate)-parseDate(a.bookDate)});
+    inCust.sort(function(a,b){return parseDate(b.bookDate)-parseDate(a.bookDate)});
     var topJ = inCust[0] ? inCust[0].jacket : "";
     if (window._lastDataLen === 0) { window._lastDataLen = newData.length; window._lastTopJacket = topJ; return; }
     if (newData.length !== window._lastDataLen || topJ !== window._lastTopJacket) {
