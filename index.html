@@ -334,16 +334,16 @@ Promise.all([
 
   /* Sort: in-custody first, has mugshot above no mugshot, then most recent mugshotDate desc */
   RECORDS.sort(function(a, b) {
-      // PERMANENT SORT RULE — do not change without explicit instruction from Van.
-      // This is a NEWS FEED. Order = (1) records with mugshots first, (2) most recent mugshot capture (mugshotDate, fallback bookDate) desc.
-      // Custody status (releaseDate) MUST NOT affect ordering. Released inmates interleave with in-custody.
-      var aMug = (a.mugshot && a.mugshot.length > 100) ? 0 : 1;
-      var bMug = (b.mugshot && b.mugshot.length > 100) ? 0 : 1;
-      if (aMug !== bMug) return aMug - bMug;
-      var ad = parseDate(a.mugshotDate || a.bookDate) || 0;
-      var bd = parseDate(b.mugshotDate || b.bookDate) || 0;
-      if (ad - bd !== 0) return bd - ad;
-      return parseInt(b.jacket||0) - parseInt(a.jacket||0);
+      // PERMANENT SORT RULE — canonical per ~/richmond-scraper/SORT_RULE.md (locked 2026-04-18).
+      // ORDER BY firstSeenAt DESC, bookDate DESC, jacket DESC. Do NOT add an in-custody tier.
+      // Do NOT use mugshotDate as primary sort (meaning varies across jails). Do NOT use bookDate primary (jail clock, backdatable).
+      var fa = a.firstSeenAt || '';
+      var fb = b.firstSeenAt || '';
+      if (fa !== fb) return fb.localeCompare(fa);
+      var ba = a.bookDate || '';
+      var bb = b.bookDate || '';
+      if (ba !== bb) return bb.localeCompare(ba);
+      return (b.jacket || '').localeCompare(a.jacket || '');
     });
 
   filtered = RECORDS.slice();
