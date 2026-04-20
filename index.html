@@ -332,18 +332,20 @@ Promise.all([
   RECORDS = results[0];
   COURT = results[1] || {};
 
-  /* Sort: in-custody first, has mugshot above no mugshot, then most recent mugshotDate desc */
+  /* Sort: firstSeenAt DESC, bookDate DESC, jacket DESC (numeric) — see SORT_RULE.md */
   RECORDS.sort(function(a, b) {
       // PERMANENT SORT RULE — canonical per ~/richmond-scraper/SORT_RULE.md (locked 2026-04-18).
-      // ORDER BY firstSeenAt DESC, bookDate DESC, jacket DESC. Do NOT add an in-custody tier.
+      // ORDER BY firstSeenAt DESC, bookDate DESC (parseDate), jacket DESC (parseInt). Do NOT add in-custody tier.
       // Do NOT use mugshotDate as primary sort (meaning varies across jails). Do NOT use bookDate primary (jail clock, backdatable).
       var fa = a.firstSeenAt || '';
       var fb = b.firstSeenAt || '';
       if (fa !== fb) return fb.localeCompare(fa);
-      var ba = a.bookDate || '';
-      var bb = b.bookDate || '';
-      if (ba !== bb) return bb.localeCompare(ba);
-      return (b.jacket || '').localeCompare(a.jacket || '');
+      var ba = parseDate(a.bookDate) || 0;
+      var bb = parseDate(b.bookDate) || 0;
+      if (ba !== bb) return bb - ba;
+      var ja = parseInt(a.jacket, 10) || 0;
+      var jb = parseInt(b.jacket, 10) || 0;
+      return jb - ja;
     });
 
   filtered = RECORDS.slice();
