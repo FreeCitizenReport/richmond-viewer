@@ -565,7 +565,7 @@ function updateFilterCount() {
     badge.style.display = 'none';
     document.getElementById('active-filters').style.display = 'none';
   }
-  document.getElementById('counter').textContent = filtered.length > 0 ? 'Record ' + (idx + 1) + ' of ' + filtered.length : '0 records';
+  document.getElementById('counter').textContent = filtered.length > 0 ? (idx + 1) + ' / ' + filtered.length : '0 records';
 }
 
 document.getElementById('f-sex').addEventListener('change', applyFilters);
@@ -660,7 +660,7 @@ function render() {
     return;
   }
   var r = filtered[idx];
-  document.getElementById('counter').textContent = 'Record ' + (idx + 1) + ' of ' + filtered.length;
+  document.getElementById('counter').textContent = (idx + 1) + ' / ' + filtered.length;
 
   /* Mugshot */
   var mugWrap = document.getElementById('mugshot-wrap');
