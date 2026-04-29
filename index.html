@@ -66,6 +66,10 @@ select:focus { outline: none; border-color: #1f6feb; }
 .mug-card-badge { display: inline-block; font-size: 9px; padding: 1px 6px; border-radius: 10px; margin-top: 4px; }
 .mug-card-badge.held { background: #da3633; color: #fff; }
 .mug-card-badge.released { background: #238636; color: #fff; }
+.mug-card-charge { font-size: 10px; color: #f0883e; margin-top: 4px; line-height: 1.3; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-weight: 500; }
+.charge-more { display: inline-block; background: rgba(240,136,62,0.18); color: #f0883e; padding: 0 5px; border-radius: 8px; font-size: 9px; font-weight: 600; margin-left: 2px; vertical-align: middle; }
+.id-value.charge { color: #f0883e; }
+.id-value.charge .charge-more { font-size: 9px; vertical-align: middle; margin-left: 4px; }
 
 /* COMING SOON LIST */
 .soon-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 8px; }
@@ -467,6 +471,7 @@ function renderLanding() {
       '<div class="mug-card-info">' +
         '<div class="mug-card-name">' + esc(name) + '</div>' +
         '<div class="mug-card-meta">' + (r.bookDate && r.bookDate !== 'NO_DATE' ? 'Booked ' + esc(r.bookDate) : 'Date unknown') + '</div>' +
+        (r.charges && r.charges.length > 0 ? '<div class="mug-card-charge">' + esc(r.charges[0]) + (r.charges.length > 1 ? ' <span class="charge-more">+' + (r.charges.length - 1) + '</span>' : '') + '</div>' : '') +
         '<span class="mug-card-badge ' + (held ? 'held' : 'released') + '">' + (held ? 'In Custody' : 'Released') + '</span>' +
       '</div></div>';
   }
@@ -675,6 +680,7 @@ function render() {
   var held = !r.releaseDate;
   var info = '';
   info += '<div class="id-row"><div class="id-label">NAME</div><div class="id-value name">' + esc(name) + '</div></div>';var dateStr = r.bookDate && r.bookDate !== 'NO_DATE' ? 'Booked ' + r.bookDate : (r.mugshotDate ? 'Data collected: ' + r.mugshotDate.substring(0, 19).replace('T', ' ') : '');if (dateStr) info += '<div class="id-row"><div class="id-label">DATE</div><div class="id-value">' + esc(dateStr) + '</div></div>';
+  if (r.charges && r.charges.length > 0) info += '<div class="id-row"><div class="id-label">TOP CHARGE</div><div class="id-value charge">' + esc(r.charges[0]) + (r.charges.length > 1 ? ' <span class="charge-more">+' + (r.charges.length - 1) + ' more</span>' : '') + '</div></div>';
   info += '<div class="id-row"><div class="id-label">JACKET #</div><div class="id-value">' + esc(r.jacket) + '</div></div>';
   if (r.age) info += '<div class="id-row"><div class="id-label">AGE</div><div class="id-value">' + esc(r.age) + '</div></div>';
   if (r.sex || r.race) info += '<div class="id-row"><div class="id-label">SEX / RACE</div><div class="id-value">' + esc((r.sex || '') + ' / ' + (r.race || '')) + '</div></div>';
